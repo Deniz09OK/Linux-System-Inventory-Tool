@@ -3,7 +3,6 @@ Vagrant.configure("2") do |config|
   config.vbguest.auto_update = false
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y python3 python3-pip
-    apt-get install -y nano
+    apt-get install -y python3 python3-pip nano tree
   SHELL
 end
