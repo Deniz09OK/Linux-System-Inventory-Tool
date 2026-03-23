@@ -1,1 +1,1 @@
-# Linux-System-Inventory-Tool-
+# Linux-System-Inventory-Tool
