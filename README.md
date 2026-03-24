@@ -26,7 +26,7 @@ L'environnement est entièrement automatisé. L'outil s'installe globalement sur
 1. Clonez ce dépôt :
 
    ```bash
-   git clone <URL_DU_DEPOT>
+   git clone https://github.com/Deniz09OK/Linux-System-Inventory-Tool
    cd Linux-System-Inventory-Tool
    ```
 
