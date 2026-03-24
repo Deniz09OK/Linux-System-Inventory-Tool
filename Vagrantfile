@@ -4,5 +4,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
     apt-get install -y python3 python3-pip nano tree
+    chmod +x /vagrant/lsit.py
+    ln -s /vagrant/lsit.py /usr/local/bin/lsit
   SHELL
 end
