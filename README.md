@@ -7,7 +7,7 @@ Ce projet met en pratique les concepts d'Infrastructure as Code (IaC) et de dév
 ## Fonctionnalités (v0.3.0)
 
 - **Auto-détection** : Récupération du nom d'hôte, de la RAM totale et du modèle de CPU.
-- **Audit d'activité** : Capture des processus actifs et cartographie de l'arborescence.
+- **Audit d'activité** : Capture des processus actifs et cartographie de l'arborescence `/home/vagrant`.
 - **Audit de sécurité** : Détection des ports réseau en écoute (`ss -tuln`) et identification des utilisateurs avec privilèges sudo.
 - **Interopérabilité** : Exportation des rapports au format texte brut (`.txt`) ou structuré (`.json`).
 - **Tableau de bord web** : Visualisation des données en temps réel via un serveur HTTP intégré (port 8080), lancé en arrière-plan grâce au multithreading.
@@ -79,6 +79,24 @@ lsit -v
   4. Retour au menu principal
 ===================================
 ```
+
+## Tableau de bord web
+
+Le tableau de bord web est accessible sur `http://localhost:8080` après le lancement via `lsit --serve` ou l'option 3 du menu interactif.
+
+Il affiche en temps réel les informations suivantes :
+
+| Section | Contenu |
+| --- | --- |
+| Machine | Nom d'hôte de la machine |
+| Processeur | Modèle du CPU |
+| Mémoire RAM | Quantité totale de RAM |
+| Sudoers | Utilisateurs avec privilèges sudo |
+| Ports réseau en écoute | Sortie de `ss -tuln` |
+| Arborescence /home/vagrant | Structure des dossiers (2 niveaux) |
+| Processus actifs | Sortie de `ps aux` |
+
+Pour arrêter le serveur, tapez `exit` ou `end` dans le terminal.
 
 ## Format des rapports
 
