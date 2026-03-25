@@ -2,10 +2,25 @@
 import subprocess
 import argparse
 import json
+import os
 from datetime import datetime
 
+dossier_script = os.path.dirname(os.path.realpath(__file__))
+chemin_changelog = os.path.join(dossier_script, "CHANGELOG.md")
+
+version_lsit = "LSIT (version inconnue)"
+try:
+    with open(chemin_changelog, "r", encoding="utf-8") as f:
+        for ligne in f:
+            if ligne.startswith("## v"):
+                version_brute = ligne.replace("##", "").strip()
+                version_lsit = f"LSIT {version_brute}"
+                break
+except FileNotFoundError:
+    pass
+
 parser = argparse.ArgumentParser(description="LSIT - Linux System Inventory Tool : Cartographie l'infrastructure locale.")
-parser.add_argument("-v", "--version", action="version", version="LSIT v1.0")
+parser.add_argument("-v", "--version", action="version", version=version_lsit)
 parser.add_argument("--format", choices=["txt", "json"], default="txt", help="Format de sortie du rapport")
 args = parser.parse_args()
 
