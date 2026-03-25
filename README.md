@@ -4,10 +4,11 @@ LSIT est un outil d'inventaire et de cartographie d'infrastructure système dév
 
 Ce projet met en pratique les concepts d'Infrastructure as Code (IaC) et de développement d'outils d'administration en ligne de commande (CLI).
 
-## 🚀 Fonctionnalités (V1.0)
+## 🚀 Fonctionnalités (v0.1.0)
 
 - **Auto-détection** : Récupération du nom d'hôte, de la RAM totale et du modèle de CPU.
 - **Audit d'activité** : Capture des processus actifs et cartographie de l'arborescence.
+- **Audit de sécurité** : Détection des ports réseau en écoute (`ss -tuln`) et identification des utilisateurs avec privilèges sudo.
 - **Interopérabilité** : Exportation des rapports au format texte brut (`.txt`) ou structuré (`.json`).
 - **Horodatage** : Traçabilité précise de l'heure de l'audit.
 
@@ -65,14 +66,28 @@ lsit -v
 ### TXT (`rapport_lsit.txt`)
 
 ```text
-=== Audit LSIT - 2024-01-15 10:30:00 ===
-Hostname : debian-vm
-RAM totale : MemTotal: 2048000 kB
-CPU : Intel(R) Core(TM) i7-...
---- Processus actifs ---
+Date de l'audit : 2026-03-25 10:30:00
+La cible a été identifiée. Nom de la machine : debian-vm
+Mémoire totale : MemTotal: 2048000 kB
+Modèle du CPU : Intel(R) Core(TM) i7-...
+
+===================================
+        PROCESSUS ACTIFS
+===================================
 ...
---- Arborescence /home/vagrant ---
+
+===================================
+      ARBORESCENCE DOSSIERS
+===================================
 ...
+
+===================================
+       AUDIT DE SÉCURITÉ
+===================================
+Groupe Sudo : sudo:x:27:vagrant
+
+Ports ouverts :
+Netid  State   Local Address:Port  ...
 ```
 
 ### JSON (`rapport_lsit.json`)
@@ -80,11 +95,13 @@ CPU : Intel(R) Core(TM) i7-...
 ```json
 {
   "date": "2024-01-15 10:30:00",
-  "hostname": "debian-vm",
+  "machine": "debian-vm",
   "ram": "MemTotal: 2048000 kB",
   "cpu": "Intel(R) Core(TM) i7-...",
   "processus": "...",
-  "arborescence": "..."
+  "arborescence": "...",
+  "securite_ports": "Netid  State   Local Address:Port  ...",
+  "securite_sudoers": "sudo:x:27:vagrant"
 }
 ```
 
