@@ -35,6 +35,18 @@ processus_actifs = cmd_ps.stdout
 cmd_tree = subprocess.run(["tree", "-L", "2", "/home/vagrant"], capture_output=True, text=True)
 arborescence = cmd_tree.stdout
 
+# Audit de sécurité : Ports réseau en écoute
+cmd_ports = subprocess.run(["ss", "-tuln"], capture_output=True, text=True)
+ports_ouverts = cmd_ports.stdout
+
+# Audit de sécurité : Utilisateurs avec privilèges sudo
+utilisateurs_sudo = "Aucun"
+with open("/etc/group", "r") as f:
+    for ligne in f:
+        if ligne.startswith("sudo:"):
+            utilisateurs_sudo = ligne.strip()
+            break
+
 date_audit = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
 if args.format == "json":
@@ -44,7 +56,9 @@ if args.format == "json":
         "ram": ram_info,
         "cpu": cpu_info,
         "processus": processus_actifs,
-        "arborescence": arborescence
+        "arborescence": arborescence,
+        "securite_ports": ports_ouverts,
+        "securite_sudoers": utilisateurs_sudo
     }
 
     with open("rapport_lsit.json", "w") as f:
@@ -68,5 +82,12 @@ else:
         f.write("      ARBORESCENCE DOSSIERS        \n")
         f.write("===================================\n")
         f.write(arborescence)
+
+        f.write("\n===================================\n")
+        f.write("       AUDIT DE SÉCURITÉ           \n")
+        f.write("===================================\n")
+        f.write(f"Groupe Sudo : {utilisateurs_sudo}\n\n")
+        f.write("Ports ouverts :\n")
+        f.write(ports_ouverts)
 
     print("Rapport TXT généré avec succès !")
