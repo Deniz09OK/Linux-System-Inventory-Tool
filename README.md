@@ -18,7 +18,7 @@ Pour déployer le laboratoire d'environnement isolé, vous devez avoir installé
 
 - [Vagrant](https://developer.hashicorp.com/vagrant)
 - [VirtualBox](https://www.virtualbox.org/)
-- Git
+- [Git](https://git-scm.com/)
 
 ## 📦 Installation et Déploiement
 

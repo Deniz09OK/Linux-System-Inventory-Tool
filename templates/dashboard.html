@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSIT - Tableau de Bord</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1>&#9001; LSIT &#9002; <span>Tableau de Bord</span></h1>
+        <p class="subtitle">Audit généré le : {{date_audit}} &nbsp;|&nbsp; <span class="tag">Live</span></p>
+    </header>
+
+    <div class="grid">
+        <div class="card">
+            <h2>&#127968; Machine</h2>
+            <p><span class="tag green">hostname</span>&nbsp; {{hostname}}</p>
+        </div>
+
+        <div class="card">
+            <h2>&#9881; Processeur</h2>
+            <p>{{cpu_info}}</p>
+        </div>
+
+        <div class="card">
+            <h2>&#128190; Mémoire RAM</h2>
+            <p>{{ram_info}}</p>
+        </div>
+
+        <div class="card">
+            <h2>&#128274; Sudoers</h2>
+            <p><span class="tag red">sudo</span>&nbsp; {{utilisateurs_sudo}}</p>
+        </div>
+
+        <div class="card full-width">
+            <h2>&#127760; Ports réseau en écoute</h2>
+            <pre>{{ports_ouverts}}</pre>
+        </div>
+
+        <div class="card full-width">
+            <h2>&#128230; Arborescence /home/vagrant</h2>
+            <pre>{{arborescence}}</pre>
+        </div>
+
+        <div class="card full-width">
+            <h2>&#9881; Processus actifs</h2>
+            <pre>{{processus_actifs}}</pre>
+        </div>
+    </div>
+
+    <footer>
+        {{version_lsit}} &mdash; Propulsé par Python http.server &mdash; Port 8080
+    </footer>
+</body>
+</html>
