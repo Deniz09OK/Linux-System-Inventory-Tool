@@ -1,3 +1,22 @@
+## v0.3.0 - 2026-03-25
+
+### 🚀 Features
+- web: ajouter le tableau de bord web, le multithreading et le menu d'accueil SSH ([commit be9bde2](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/be9bde2a91e1a2b6528370d695340eeb2d061b1a)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool- ([commit ec06928](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/ec0692849f4b6a916d0efcf62af85156fe2af04b)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 6
+- Period: 2026-03-25 → 2026-03-25
+- Impact score: 3 🚀
+- Compare changes: [v0.2.0...v0.3.0](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.2.0...v0.3.0)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.2.0 - 2026-03-25
 
 ### 🚀 Features
