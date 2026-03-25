@@ -4,7 +4,7 @@
 - web: ajouter le tableau de bord web, le multithreading et le menu d'accueil SSH ([commit be9bde2](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/be9bde2a91e1a2b6528370d695340eeb2d061b1a)) by Deniz09OK
 
 ### 🔀 Merges
-- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool- ([commit ec06928](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/ec0692849f4b6a916d0efcf62af85156fe2af04b)) by Deniz09OK
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit ec06928](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/ec0692849f4b6a916d0efcf62af85156fe2af04b)) by Deniz09OK
 
 ### 📊 Release Stats
 - Commits: 3

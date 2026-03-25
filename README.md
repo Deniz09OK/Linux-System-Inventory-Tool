@@ -1,18 +1,21 @@
-# LSIT - Linux System Inventory Tool 🐧🔍
+# LSIT - Linux System Inventory Tool
 
-LSIT est un outil d'inventaire et de cartographie d'infrastructure système développé en Python. Il permet d'auditer rapidement une machine Linux, d'extraire ses métriques vitales et de générer un rapport structuré.
+LSIT est un outil d'inventaire et de cartographie d'infrastructure système développé en Python. Il permet d'auditer rapidement une machine Linux, d'extraire ses métriques vitales et de générer un rapport structuré ou de visualiser les données via un tableau de bord web.
 
 Ce projet met en pratique les concepts d'Infrastructure as Code (IaC) et de développement d'outils d'administration en ligne de commande (CLI).
 
-## 🚀 Fonctionnalités (v0.1.0)
+## Fonctionnalités (v0.3.0)
 
 - **Auto-détection** : Récupération du nom d'hôte, de la RAM totale et du modèle de CPU.
 - **Audit d'activité** : Capture des processus actifs et cartographie de l'arborescence.
 - **Audit de sécurité** : Détection des ports réseau en écoute (`ss -tuln`) et identification des utilisateurs avec privilèges sudo.
 - **Interopérabilité** : Exportation des rapports au format texte brut (`.txt`) ou structuré (`.json`).
+- **Tableau de bord web** : Visualisation des données en temps réel via un serveur HTTP intégré (port 8080), lancé en arrière-plan grâce au multithreading.
+- **Menu interactif SSH** : Interface de navigation accessible directement depuis la session SSH.
 - **Horodatage** : Traçabilité précise de l'heure de l'audit.
+- **Version dynamique** : La version est lue automatiquement depuis le `CHANGELOG.md`.
 
-## 🛠️ Prérequis
+## Prérequis
 
 Pour déployer le laboratoire d'environnement isolé, vous devez avoir installé sur votre machine hôte :
 
@@ -20,7 +23,7 @@ Pour déployer le laboratoire d'environnement isolé, vous devez avoir installé
 - [VirtualBox](https://www.virtualbox.org/)
 - [Git](https://git-scm.com/)
 
-## 📦 Installation et Déploiement
+## Installation et Déploiement
 
 L'environnement est entièrement automatisé. L'outil s'installe globalement sur la machine cible lors du provisionnement.
 
@@ -43,25 +46,41 @@ L'environnement est entièrement automatisé. L'outil s'installe globalement sur
    vagrant ssh
    ```
 
-## 💻 Utilisation
+## Utilisation
 
 Une fois connecté en SSH, la commande `lsit` est disponible globalement sur le système.
 
 ```bash
-# Afficher l'aide
-lsit --help
-
-# Générer un rapport texte (défaut)
+# Lancer le menu interactif (défaut)
 lsit
 
-# Générer un rapport JSON structuré
+# Générer directement un rapport texte
+lsit --format txt
+
+# Générer directement un rapport JSON structuré
 lsit --format json
+
+# Lancer directement le tableau de bord web sur le port 8080
+lsit --serve
 
 # Afficher la version
 lsit -v
 ```
 
-## 📄 Format des rapports
+### Menu interactif
+
+```text
+===================================
+   LSIT v0.3.0 - 2026-03-25
+===================================
+  1. Générer un rapport TXT
+  2. Générer un rapport JSON
+  3. Lancer le tableau de bord web
+  4. Retour au menu principal
+===================================
+```
+
+## Format des rapports
 
 ### TXT (`rapport_lsit.txt`)
 
@@ -94,7 +113,7 @@ Netid  State   Local Address:Port  ...
 
 ```json
 {
-  "date": "2024-01-15 10:30:00",
+  "date": "2026-03-25 10:30:00",
   "machine": "debian-vm",
   "ram": "MemTotal: 2048000 kB",
   "cpu": "Intel(R) Core(TM) i7-...",
@@ -105,11 +124,15 @@ Netid  State   Local Address:Port  ...
 }
 ```
 
-## 🗂️ Structure du projet
+## Structure du projet
 
 ```text
 Linux-System-Inventory-Tool/
-├── lsit.py         # Script principal
-├── Vagrantfile     # Configuration de la VM Debian 12
+├── lsit.py                  # Script principal
+├── Vagrantfile              # Configuration de la VM Debian 12
+├── CHANGELOG.md             # Historique des versions
+├── templates/
+│   ├── dashboard.html       # Template du tableau de bord web
+│   └── dashboard.css        # Styles du tableau de bord
 └── .gitignore
 ```
