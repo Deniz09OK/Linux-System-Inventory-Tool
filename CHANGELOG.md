@@ -1,3 +1,27 @@
+## v0.2.0 - 2026-03-25
+
+### 🚀 Features
+- web: ajouter le tableau de bord web, le multithreading et le menu d'accueil SSH ([commit be9bde2](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/be9bde2a91e1a2b6528370d695340eeb2d061b1a)) by Deniz09OK
+- security: ajouter scan des ports, Sudoers, version dynamique et automatisation Cron ([commit 3486acc](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/3486acc5634f6b1ee80b88a0fa1bbe60246ec716)) by Deniz09OK
+
+### 📝 Autres changements
+- docs(readme): mise à jour de la documentation et épurage visuel du dashboard ([commit 028aac2](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/028aac23cd8a80264f6d1eeace1277a9677726d8)) by Deniz09OK
+- docs(readme): mettre à jour la documentation pour la v0.3.0 ([commit 2deb0ac](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/2deb0ac37b2b4b22fc53cace515b9321808893d5)) by Deniz09OK
+- docs(changelog): update for v0.3.0 ([commit 2a4ae9f](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/2a4ae9f194850ccb6138e7f8d112ea7f5d70f29d)) by Deniz09OK
+- docs(changelog): update for v0.2.0 ([commit ce5f463](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/ce5f463407af1747282996a85f7360bcf33c3c52)) by Deniz09OK
+- docs(readme): mettre à jour la documentation pour la v0.1.0 ([commit 78d619f](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/78d619f9d47d4ec0d37e4381f97075e1cec28e8c)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 19
+- Contributors: 1
+- Files changed: 7
+- Period: 2026-03-25 → 2026-03-25
+- Impact score: 8 🚀
+- Compare changes: [v0.1.0...v0.2.0](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.1.0...v0.2.0)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.3.0 - 2026-03-25
 
 ### 🚀 Features
@@ -17,7 +41,6 @@
 ### 🤝 Contributors
 - Deniz09OK
 
-## v0.2.0 - 2026-03-25
 
 ### 🚀 Features
 - security: ajouter scan des ports, Sudoers, version dynamique et automatisation Cron ([commit 3486acc](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/3486acc5634f6b1ee80b88a0fa1bbe60246ec716)) by Deniz09OK
