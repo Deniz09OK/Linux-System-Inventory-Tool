@@ -1,3 +1,22 @@
+## v0.5.0 - 2026-03-26
+
+### 🚀 Features
+- system: ajouter les métriques d'uptime et de charge système ([commit cd1e10b](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/cd1e10baa686673d47146a4d2c20928ec375bf47)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool- ([commit e8740d4](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/e8740d466ed4d025923636533feba0363bc6d81f)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 5
+- Period: 2026-03-26 → 2026-03-26
+- Impact score: 3 🚀
+- Compare changes: [v0.4.0...v0.5.0](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.4.0...v0.5.0)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.4.0 - 2026-03-26
 
 ### 📝 Autres changements
