@@ -1,79 +1,159 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LSIT - Tableau de Bord</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LSIT — Tableau de Bord</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 </head>
 <body>
-    <header>
-        <h1>LSIT <span>Tableau de Bord</span></h1>
-        <p class="subtitle">Audit généré le : <span id="date_audit">{{date_audit}}</span> &nbsp;|&nbsp; <span class="tag">Live</span></p>
-    </header>
 
-    <div class="grid">
-        <div class="card">
-            <h2>Machine</h2>
-            <p><span class="tag green">hostname</span>&nbsp; <span id="hostname">{{hostname}}</span></p>
-        </div>
+  <!-- Fond animé -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow"></div>
 
-        <div class="card">
-            <h2>Processeur</h2>
-            <p id="cpu_info">{{cpu_info}}</p>
-        </div>
+  <!-- ═══ HEADER ═══ -->
+  <header>
+    <div class="header-left">
+      <div class="logo-block">
+        <span class="logo-bracket">[</span>
+        <span class="logo-name">LSIT</span>
+        <span class="logo-bracket">]</span>
+      </div>
+      <div class="header-meta">
+        <span class="header-title">Linux System Inventory Tool</span>
+        <span class="header-version" id="version_lsit">{{ version_lsit }}</span>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-indicator">
+        <span class="pulse"></span>
+        <span>LIVE</span>
+      </div>
+      <div class="header-date" id="date_audit">{{ date_audit }}</div>
+    </div>
+  </header>
 
-        <div class="card">
-            <h2>Mémoire RAM</h2>
-            <p id="ram_info">{{ram_info}}</p>
-        </div>
+  <!-- ═══ STATS ROW ═══ -->
+  <section class="stats-row">
+    <div class="stat-card">
+      <span class="stat-label">HOSTNAME</span>
+      <span class="stat-value mono" id="hostname">{{ hostname }}</span>
+    </div>
+    <div class="stat-card stat-card--ram">
+      <span class="stat-label">MÉMOIRE RAM</span>
+      <span class="stat-value mono" id="ram_info">{{ ram_info }}</span>
+      <div class="stat-ram-wrap"><div class="stat-ram-bar" id="ram_bar"></div></div>
+    </div>
+    <div class="stat-card stat-card--alert">
+      <span class="stat-label">SUDOERS <span class="badge badge--red">CRITIQUE</span></span>
+      <span class="stat-value mono" id="utilisateurs_sudo">{{ utilisateurs_sudo }}</span>
+    </div>
+  </section>
 
-        <div class="card">
-            <h2>Sudoers</h2>
-            <p><span class="tag red">sudo</span>&nbsp; <span id="utilisateurs_sudo">{{utilisateurs_sudo}}</span></p>
-        </div>
+  <!-- ═══ GRID PRINCIPALE ═══ -->
+  <main class="main-grid">
 
-        <div class="card full-width">
-            <h2>Ports réseau en écoute</h2>
-            <pre id="ports_ouverts">{{ports_ouverts}}</pre>
-        </div>
-
-        <div class="card full-width">
-            <h2>Arborescence /home/vagrant</h2>
-            <pre id="arborescence">{{arborescence}}</pre>
-        </div>
-
-        <div class="card full-width">
-            <h2>Processus actifs</h2>
-            <pre id="processus_actifs">{{processus_actifs}}</pre>
-        </div>
+    <!-- CPU — pleine largeur -->
+    <div class="card card--full card--info">
+      <div class="card-header">
+        <span class="card-icon">⚙</span>
+        <h2>Processeur</h2>
+      </div>
+      <div class="card-body">
+        <p class="info-value" id="cpu_info">{{ cpu_info }}</p>
+      </div>
     </div>
 
-    <footer>
-        <span id="version_lsit">{{version_lsit}}</span> &mdash; Propulsé par Flask &mdash; Port 8080
-    </footer>
+    <!-- Ports réseau -->
+    <div class="card card--full card--security">
+      <div class="card-header">
+        <span class="card-icon">⬡</span>
+        <h2>Ports réseau en écoute</h2>
+        <span class="badge badge--orange">RÉSEAU</span>
+      </div>
+      <div class="card-body">
+        <pre class="terminal" id="ports_ouverts">{{ ports_ouverts }}</pre>
+      </div>
+    </div>
 
-    <script>
-        async function rafraichirDonnees() {
-            try {
-                const response = await fetch('/api/donnees');
-                const data = await response.json();
-                
-                document.getElementById('date_audit').textContent = data.date;
-                document.getElementById('hostname').textContent = data.machine;
-                document.getElementById('cpu_info').textContent = data.cpu;
-                document.getElementById('ram_info').textContent = data.ram;
-                document.getElementById('utilisateurs_sudo').textContent = data.securite_sudoers;
-                document.getElementById('ports_ouverts').textContent = data.securite_ports;
-                document.getElementById('arborescence').textContent = data.arborescence;
-                document.getElementById('processus_actifs').textContent = data.processus;
-                document.getElementById('version_lsit').textContent = data.version_lsit;
-            } catch (error) {
-                console.error('Erreur lors du rafraîchissement:', error);
-            }
-        }
+    <!-- Arborescence -->
+    <div class="card card--security">
+      <div class="card-header">
+        <span class="card-icon">⊞</span>
+        <h2>Arborescence <span class="path">/home/vagrant</span></h2>
+      </div>
+      <div class="card-body">
+        <pre class="terminal" id="arborescence">{{ arborescence }}</pre>
+      </div>
+    </div>
 
-        setInterval(rafraichirDonnees, 5000);
-    </script>
+    <!-- Processus actifs -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-icon">◈</span>
+        <h2>Processus actifs</h2>
+        <span class="badge badge--blue">SYSTEM</span>
+      </div>
+      <div class="card-body">
+        <pre class="terminal" id="processus_actifs">{{ processus_actifs }}</pre>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ═══ FOOTER ═══ -->
+  <footer>
+    <span id="footer_version">{{ version_lsit }}</span>
+    <a href="/api/donnees" target="_blank">API JSON</a>
+  </footer>
+
+  <!-- ═══ SCRIPT REFRESH ═══ -->
+  <script>
+    function parseRamPercent(ramStr) {
+      const match = ramStr.match(/(\d+)/);
+      if (!match) return 40;
+      const kb = parseInt(match[1]);
+      return Math.min(85, Math.max(15, Math.round((kb / 8192000) * 60 + 20)));
+    }
+
+    function updateRamBar(ramStr) {
+      const pct = parseRamPercent(ramStr);
+      const bar = document.getElementById('ram_bar');
+      if (bar) {
+        bar.style.width = pct + '%';
+        bar.style.background = pct > 70 ? 'var(--red)' : pct > 50 ? 'var(--orange)' : 'var(--blue)';
+        bar.title = `~${pct}% estimé`;
+      }
+    }
+
+    async function rafraichirDonnees() {
+      try {
+        const res = await fetch('/api/donnees');
+        const d = await res.json();
+
+        document.getElementById('date_audit').textContent        = d.date;
+        document.getElementById('hostname').textContent          = d.machine;
+        document.getElementById('ram_info').textContent          = d.ram;
+        document.getElementById('utilisateurs_sudo').textContent = d.securite_sudoers;
+        document.getElementById('cpu_info').textContent          = d.cpu;
+        document.getElementById('ports_ouverts').textContent     = d.securite_ports;
+        document.getElementById('arborescence').textContent      = d.arborescence;
+        document.getElementById('processus_actifs').textContent  = d.processus;
+        document.getElementById('version_lsit').textContent      = d.version_lsit;
+        document.getElementById('footer_version').textContent    = d.version_lsit;
+
+        updateRamBar(d.ram);
+      } catch (e) {
+        console.warn('Erreur refresh:', e);
+      }
+    }
+
+    updateRamBar(document.getElementById('ram_info').textContent);
+    setInterval(rafraichirDonnees, 5000);
+  </script>
 </body>
 </html>
