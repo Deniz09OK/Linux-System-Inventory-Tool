@@ -5,13 +5,10 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
     apt-get update
-    apt-get install -y python3 python3-pip nano tree
-
+    apt-get install -y python3 python3-pip nano tree python3-flask
     chmod +x /vagrant/lsit.py
     ln -sf /vagrant/lsit.py /usr/local/bin/lsit
-
     echo "0 0 * * * root /usr/local/bin/lsit --format json" > /etc/cron.d/lsit_audit
-
     cat > /etc/profile.d/lsit-welcome.sh << 'EOF'
 #!/bin/bash
 [[ $- == *i* ]] || return

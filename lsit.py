@@ -4,8 +4,9 @@ import argparse
 import json
 import os
 import threading
+import logging
 from datetime import datetime
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from flask import Flask, render_template
 
 dossier_script = os.path.dirname(os.path.realpath(__file__))
 chemin_changelog = os.path.join(dossier_script, "CHANGELOG.md")
@@ -86,7 +87,7 @@ def afficher_menu():
     print("===================================")
 
 
-def mode_txt(donnees):
+def mode_txt(donnees: dict) -> None:
     with open("rapport_lsit.txt", "a") as f:
         f.write(f"Date de l'audit : {donnees['date']}\n")
         f.write(f"La cible a été identifiée. Nom de la machine : {donnees['machine']}\n")
@@ -114,7 +115,7 @@ def mode_txt(donnees):
     input("Appuyez sur Entrée pour revenir au menu...")
 
 
-def mode_json(donnees):
+def mode_json(donnees: dict) -> None:
     with open("rapport_lsit.json", "w") as f:
         json.dump(donnees, f, indent=4)
 
@@ -122,58 +123,39 @@ def mode_json(donnees):
     input("Appuyez sur Entrée pour revenir au menu...")
 
 
-def mode_serve(donnees):
-    templates_dir = os.path.join(dossier_script, "templates")
+def mode_serve() -> None:
+    app = Flask(__name__, template_folder=os.path.join(dossier_script, "templates"),
+                          static_folder=os.path.join(dossier_script, "static"))
 
-    with open(os.path.join(templates_dir, "dashboard.html"), "r", encoding="utf-8") as f:
-        html_page = f.read()
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
 
-    with open(os.path.join(templates_dir, "dashboard.css"), "rb") as f:
-        css_content = f.read()
-
-    html_page = html_page \
-        .replace("{{date_audit}}", donnees["date"]) \
-        .replace("{{hostname}}", donnees["machine"]) \
-        .replace("{{cpu_info}}", donnees["cpu"]) \
-        .replace("{{ram_info}}", donnees["ram"]) \
-        .replace("{{utilisateurs_sudo}}", donnees["securite_sudoers"]) \
-        .replace("{{ports_ouverts}}", donnees["securite_ports"]) \
-        .replace("{{arborescence}}", donnees["arborescence"]) \
-        .replace("{{processus_actifs}}", donnees["processus"]) \
-        .replace("{{version_lsit}}", version_lsit)
-
-    class DashboardHandler(BaseHTTPRequestHandler):
-        def log_message(self, format, *args):
-            pass  # Supprime les logs du serveur dans le terminal
-
-        def do_GET(self):
-            if self.path == "/style.css":
-                self.send_response(200)
-                self.send_header("Content-type", "text/css; charset=utf-8")
-                self.end_headers()
-                self.wfile.write(css_content)
-            else:
-                self.send_response(200)
-                self.send_header("Content-type", "text/html; charset=utf-8")
-                self.end_headers()
-                self.wfile.write(html_page.encode("utf-8"))
+    @app.route('/')
+    def dashboard():
+        donnees = collecter_donnees()
+        return render_template('dashboard.html',
+                               date_audit=donnees["date"],
+                               hostname=donnees["machine"],
+                               cpu_info=donnees["cpu"],
+                               ram_info=donnees["ram"],
+                               utilisateurs_sudo=donnees["securite_sudoers"],
+                               ports_ouverts=donnees["securite_ports"],
+                               arborescence=donnees["arborescence"],
+                               processus_actifs=donnees["processus"],
+                               version_lsit=version_lsit)
 
     PORT = 8080
-    server = HTTPServer(("", PORT), DashboardHandler)
+    print(f"\nTableau de bord Flask disponible sur : http://localhost:{PORT}")
+    print('Tapez "exit" ou "end" pour arrêter le serveur et revenir au menu.\n')
 
-    thread_serveur = threading.Thread(target=server.serve_forever)
+    thread_serveur = threading.Thread(target=app.run, kwargs={'host': '0.0.0.0', 'port': PORT, 'use_reloader': False})
     thread_serveur.daemon = True
     thread_serveur.start()
-
-    print(f"\nTableau de bord disponible sur : http://localhost:{PORT}")
-    print('Tapez "exit" ou "end" pour arrêter le serveur et revenir au menu.\n')
 
     while True:
         commande = input("> ").strip().lower()
         if commande in ("exit", "end"):
-            server.shutdown()
-            server.server_close()
-            print("Serveur arrêté.")
+            print("Serveur arrêté. (Appuyez sur Entrée pour continuer)")
             break
 
 
@@ -193,20 +175,20 @@ def main():
             donnees = collecter_donnees()
             mode_json(donnees)
         elif choix == "3":
-            print("\nCollecte des données en cours...")
-            donnees = collecter_donnees()
-            mode_serve(donnees)
+            print("\nDémarrage du serveur web...")
+            mode_serve()
         else:
             print("Choix invalide. Veuillez entrer 1, 2, 3 ou 4.")
 
 
 if args.format or args.serve:
-    donnees = collecter_donnees()
     if args.serve:
-        mode_serve(donnees)
-    elif args.format == "json":
-        mode_json(donnees)
+        mode_serve()
     else:
-        mode_txt(donnees)
+        donnees = collecter_donnees()
+        if args.format == "json":
+            mode_json(donnees)
+        else:
+            mode_txt(donnees)
 else:
     main()

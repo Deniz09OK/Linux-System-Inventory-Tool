@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LSIT - Tableau de Bord</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
 </head>
 <body>
     <header>
@@ -50,7 +50,7 @@
     </div>
 
     <footer>
-        {{version_lsit}} &mdash; Propulsé par Python http.server &mdash; Port 8080
+        {{version_lsit}} &mdash; Propulsé par Flask &mdash; Port 8080
     </footer>
 </body>
 </html>
