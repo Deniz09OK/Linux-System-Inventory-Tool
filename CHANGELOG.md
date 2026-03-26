@@ -1,4 +1,4 @@
-## v0.2.1 - 2026-03-26
+## v0.3.1 - 2026-03-26
 
 ### ♻️ Refactors / Performance
 - web: migrer le tableau de bord vers Flask ([commit f783b3e](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/f783b3e06955183849ede1b71dd5071f414b6760)) by Deniz09OK
@@ -17,7 +17,7 @@
 ### 🤝 Contributors
 - Deniz09OK
 
-## v0.2.0 - 2026-03-25
+## v0.3.0 - 2026-03-25
 
 ### 🚀 Features
 - web: ajouter le tableau de bord web, le multithreading et le menu d'accueil SSH ([commit be9bde2](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/be9bde2a91e1a2b6528370d695340eeb2d061b1a)) by Deniz09OK
@@ -41,7 +41,7 @@
 ### 🤝 Contributors
 - Deniz09OK
 
-## v0.3.0 - 2026-03-25
+## v0.2.0 - 2026-03-25
 
 ### 🚀 Features
 - web: ajouter le tableau de bord web, le multithreading et le menu d'accueil SSH ([commit be9bde2](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/be9bde2a91e1a2b6528370d695340eeb2d061b1a)) by Deniz09OK
