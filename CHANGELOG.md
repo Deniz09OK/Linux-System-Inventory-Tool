@@ -1,3 +1,22 @@
+## v0.4.0 - 2026-03-26
+
+### 🚀 Features
+- web: rafraîchir le tableau de bord en temps réel via API ([commit 768afc7](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/768afc7b3ab3662ebe18490748faf943b175552b)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool- ([commit 6f2fd4f](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/6f2fd4f2a3c319c1c44e3e2f37ffa419b5a50ce9)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 3
+- Period: 2026-03-26 → 2026-03-26
+- Impact score: 3 🚀
+- Compare changes: [v0.3.1...v0.4.0](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.3.1...v0.4.0)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.3.1 - 2026-03-26
 
 ### 📝 Autres changements
