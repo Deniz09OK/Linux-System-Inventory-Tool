@@ -4,16 +4,17 @@ LSIT est un outil d'inventaire et de cartographie d'infrastructure système dév
 
 Ce projet met en pratique les concepts d'Infrastructure as Code (IaC) et de développement d'outils d'administration en ligne de commande (CLI).
 
-## Fonctionnalités (v0.3.0)
+## Fonctionnalités (v0.3.1)
 
 - **Auto-détection** : Récupération du nom d'hôte, de la RAM totale et du modèle de CPU.
 - **Audit d'activité** : Capture des processus actifs et cartographie de l'arborescence `/home/vagrant`.
 - **Audit de sécurité** : Détection des ports réseau en écoute (`ss -tuln`) et identification des utilisateurs avec privilèges sudo.
 - **Interopérabilité** : Exportation des rapports au format texte brut (`.txt`) ou structuré (`.json`).
-- **Tableau de bord web** : Visualisation des données en temps réel via un serveur HTTP intégré (port 8080), lancé en arrière-plan grâce au multithreading.
+- **Tableau de bord web** : Visualisation des données en temps réel via un serveur Flask intégré (port 8080), lancé en arrière-plan grâce au multithreading.
 - **Menu interactif SSH** : Interface de navigation accessible directement depuis la session SSH.
 - **Horodatage** : Traçabilité précise de l'heure de l'audit.
 - **Version dynamique** : La version est lue automatiquement depuis le `CHANGELOG.md`.
+- **Automatisation Cron** : Génération quotidienne automatique d'un rapport JSON à minuit.
 
 ## Prérequis
 
@@ -46,9 +47,11 @@ L'environnement est entièrement automatisé. L'outil s'installe globalement sur
    vagrant ssh
    ```
 
+> Le port `8080` de la VM est automatiquement redirigé vers le port `8081` de la machine hôte.
+
 ## Utilisation
 
-Une fois connecté en SSH, la commande `lsit` est disponible globalement sur le système.
+Une fois connecté en SSH, le menu interactif se lance automatiquement. La commande `lsit` est également disponible globalement sur le système.
 
 ```bash
 # Lancer le menu interactif (défaut)
@@ -71,7 +74,7 @@ lsit -v
 
 ```text
 ===================================
-   LSIT v0.3.0 - 2026-03-25
+   LSIT v0.3.1 - 2026-03-26
 ===================================
   1. Générer un rapport TXT
   2. Générer un rapport JSON
@@ -82,7 +85,7 @@ lsit -v
 
 ## Tableau de bord web
 
-Le tableau de bord web est accessible sur `http://localhost:8080` après le lancement via `lsit --serve` ou l'option 3 du menu interactif.
+Le tableau de bord web est accessible sur `http://localhost:8081` (port forwardé depuis la VM) après le lancement via `lsit --serve` ou l'option 3 du menu interactif.
 
 Il affiche en temps réel les informations suivantes :
 
@@ -103,7 +106,7 @@ Pour arrêter le serveur, tapez `exit` ou `end` dans le terminal.
 ### TXT (`rapport_lsit.txt`)
 
 ```text
-Date de l'audit : 2026-03-25 10:30:00
+Date de l'audit : 2026-03-26 10:30:00
 La cible a été identifiée. Nom de la machine : debian-vm
 Mémoire totale : MemTotal: 2048000 kB
 Modèle du CPU : Intel(R) Core(TM) i7-...
@@ -131,7 +134,7 @@ Netid  State   Local Address:Port  ...
 
 ```json
 {
-  "date": "2026-03-25 10:30:00",
+  "date": "2026-03-26 10:30:00",
   "machine": "debian-vm",
   "ram": "MemTotal: 2048000 kB",
   "cpu": "Intel(R) Core(TM) i7-...",
@@ -142,15 +145,32 @@ Netid  State   Local Address:Port  ...
 }
 ```
 
+## CI/CD — Versioning automatique
+
+Le projet utilise un workflow GitHub Actions (`versionning.yml`) pour gérer le versioning sémantique automatiquement à chaque push sur `main`.
+
+| Préfixe de commit | Effet |
+| --- | --- |
+| `feat:` / `✨` / `🚀` | Bump mineur (x.**Y**.0) |
+| `fix:` / `🐛` / `perf:` / `refactor:` | Bump patch (x.y.**Z**) |
+| `BREAKING CHANGE` / `!:` | Bump majeur (**X**.0.0) |
+| `docs:` / autres | Pas de bump |
+
+Le workflow génère et commit automatiquement le `CHANGELOG.md`, puis crée et pousse le tag Git correspondant. Un mode **dry-run** est disponible via `workflow_dispatch` pour prévisualiser les changements sans les appliquer.
+
 ## Structure du projet
 
 ```text
 Linux-System-Inventory-Tool/
+├── .github/
+│   └── workflows/
+│       └── versionning.yml  # Workflow CI/CD de versioning sémantique
 ├── lsit.py                  # Script principal
 ├── Vagrantfile              # Configuration de la VM Debian 12
 ├── CHANGELOG.md             # Historique des versions
 ├── templates/
-│   ├── dashboard.html       # Template du tableau de bord web
+│   └── dashboard.html       # Template du tableau de bord web (Flask)
+├── static/
 │   └── dashboard.css        # Styles du tableau de bord
 └── .gitignore
 ```
