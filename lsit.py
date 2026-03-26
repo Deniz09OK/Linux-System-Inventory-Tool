@@ -6,7 +6,7 @@ import os
 import threading
 import logging
 from datetime import datetime
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 
 dossier_script = os.path.dirname(os.path.realpath(__file__))
 chemin_changelog = os.path.join(dossier_script, "CHANGELOG.md")
@@ -143,6 +143,12 @@ def mode_serve() -> None:
                                arborescence=donnees["arborescence"],
                                processus_actifs=donnees["processus"],
                                version_lsit=version_lsit)
+
+    @app.route('/api/donnees')
+    def api_donnees():
+        donnees = collecter_donnees()
+        donnees["version_lsit"] = version_lsit
+        return jsonify(donnees)
 
     PORT = 8080
     print(f"\nTableau de bord Flask disponible sur : http://localhost:{PORT}")

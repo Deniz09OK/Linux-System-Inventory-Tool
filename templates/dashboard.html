@@ -9,48 +9,71 @@
 <body>
     <header>
         <h1>LSIT <span>Tableau de Bord</span></h1>
-        <p class="subtitle">Audit généré le : {{date_audit}} &nbsp;|&nbsp; <span class="tag">Live</span></p>
+        <p class="subtitle">Audit généré le : <span id="date_audit">{{date_audit}}</span> &nbsp;|&nbsp; <span class="tag">Live</span></p>
     </header>
 
     <div class="grid">
         <div class="card">
             <h2>Machine</h2>
-            <p><span class="tag green">hostname</span>&nbsp; {{hostname}}</p>
+            <p><span class="tag green">hostname</span>&nbsp; <span id="hostname">{{hostname}}</span></p>
         </div>
 
         <div class="card">
             <h2>Processeur</h2>
-            <p>{{cpu_info}}</p>
+            <p id="cpu_info">{{cpu_info}}</p>
         </div>
 
         <div class="card">
             <h2>Mémoire RAM</h2>
-            <p>{{ram_info}}</p>
+            <p id="ram_info">{{ram_info}}</p>
         </div>
 
         <div class="card">
             <h2>Sudoers</h2>
-            <p><span class="tag red">sudo</span>&nbsp; {{utilisateurs_sudo}}</p>
+            <p><span class="tag red">sudo</span>&nbsp; <span id="utilisateurs_sudo">{{utilisateurs_sudo}}</span></p>
         </div>
 
         <div class="card full-width">
             <h2>Ports réseau en écoute</h2>
-            <pre>{{ports_ouverts}}</pre>
+            <pre id="ports_ouverts">{{ports_ouverts}}</pre>
         </div>
 
         <div class="card full-width">
             <h2>Arborescence /home/vagrant</h2>
-            <pre>{{arborescence}}</pre>
+            <pre id="arborescence">{{arborescence}}</pre>
         </div>
 
         <div class="card full-width">
             <h2>Processus actifs</h2>
-            <pre>{{processus_actifs}}</pre>
+            <pre id="processus_actifs">{{processus_actifs}}</pre>
         </div>
     </div>
 
     <footer>
-        {{version_lsit}} &mdash; Propulsé par Flask &mdash; Port 8080
+        <span id="version_lsit">{{version_lsit}}</span> &mdash; Propulsé par Flask &mdash; Port 8080
     </footer>
+
+    <script>
+        async function rafraichirDonnees() {
+            try {
+                const response = await fetch('/api/donnees');
+                const data = await response.json();
+                
+                document.getElementById('date_audit').textContent = data.date;
+                document.getElementById('hostname').textContent = data.machine;
+                document.getElementById('cpu_info').textContent = data.cpu;
+                document.getElementById('ram_info').textContent = data.ram;
+                document.getElementById('utilisateurs_sudo').textContent = data.securite_sudoers;
+                document.getElementById('ports_ouverts').textContent = data.securite_ports;
+                document.getElementById('arborescence').textContent = data.arborescence;
+                document.getElementById('processus_actifs').textContent = data.processus;
+                document.getElementById('version_lsit').textContent = data.version_lsit;
+            } catch (error) {
+                console.error('Erreur lors du rafraîchissement:', error);
+            }
+        }
+
+        setInterval(rafraichirDonnees, 5000);
+    </script>
 </body>
 </html>
