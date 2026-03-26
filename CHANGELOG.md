@@ -1,5 +1,19 @@
 ## v0.3.1 - 2026-03-26
 
+### 📝 Autres changements
+- docs(readme): mis à jour de la documentation ([commit e952674](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/e95267447ebb9a032e39b1638fa5adabe9e9b0ae)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 1
+- Contributors: 1
+- Files changed: 1
+- Period: 2026-03-26 → 2026-03-26
+- Impact score: 0 🚀
+
+### 🤝 Contributors
+- Deniz09OK
+
+
 ### ♻️ Refactors / Performance
 - web: migrer le tableau de bord vers Flask ([commit f783b3e](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/f783b3e06955183849ede1b71dd5071f414b6760)) by Deniz09OK
 
