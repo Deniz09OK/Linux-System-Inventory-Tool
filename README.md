@@ -9,8 +9,10 @@ Ce projet met en pratique les concepts d'Infrastructure as Code (IaC) et de dév
 - **Auto-détection** : Récupération du nom d'hôte, de la RAM totale et du modèle de CPU.
 - **Audit d'activité** : Capture des processus actifs et cartographie de l'arborescence `/home/vagrant`.
 - **Audit de sécurité** : Détection des ports réseau en écoute (`ss -tuln`) et identification des utilisateurs avec privilèges sudo.
+- **Monitoring système** : Affichage de l'espace disque (`df -h`), de l'uptime et du load average.
 - **Interopérabilité** : Exportation des rapports au format texte brut (`.txt`) ou structuré (`.json`).
-- **Tableau de bord web** : Visualisation des données en temps réel via un serveur Flask intégré (port 8080), lancé en arrière-plan grâce au multithreading.
+- **Tableau de bord web** : Visualisation des données en temps réel via un serveur Flask intégré (port 8080), avec rafraîchissement automatique toutes les 5 secondes.
+- **API REST** : Endpoint `/api/donnees` retournant les métriques au format JSON.
 - **Menu interactif SSH** : Interface de navigation accessible directement depuis la session SSH.
 - **Horodatage** : Traçabilité précise de l'heure de l'audit.
 - **Version dynamique** : La version est lue automatiquement depuis le `CHANGELOG.md`.
@@ -87,17 +89,28 @@ lsit -v
 
 Le tableau de bord web est accessible sur `http://localhost:8081` (port forwardé depuis la VM) après le lancement via `lsit --serve` ou l'option 3 du menu interactif.
 
-Il affiche en temps réel les informations suivantes :
+Il affiche en temps réel les informations suivantes (rafraîchissement automatique toutes les 5 secondes) :
 
 | Section | Contenu |
 | --- | --- |
 | Machine | Nom d'hôte de la machine |
 | Processeur | Modèle du CPU |
 | Mémoire RAM | Quantité totale de RAM |
+| Uptime | Temps d'activité du système |
+| Load Average | Charge moyenne (1/5/15 min) |
 | Sudoers | Utilisateurs avec privilèges sudo |
+| Espace disque | Sortie de `df -h` |
 | Ports réseau en écoute | Sortie de `ss -tuln` |
 | Arborescence /home/vagrant | Structure des dossiers (2 niveaux) |
 | Processus actifs | Sortie de `ps aux` |
+
+### API REST
+
+L'endpoint `/api/donnees` retourne toutes les métriques au format JSON, permettant l'intégration avec d'autres outils de monitoring.
+
+```bash
+curl http://localhost:8081/api/donnees
+```
 
 Pour arrêter le serveur, tapez `exit` ou `end` dans le terminal.
 
@@ -141,7 +154,10 @@ Netid  State   Local Address:Port  ...
   "processus": "...",
   "arborescence": "...",
   "securite_ports": "Netid  State   Local Address:Port  ...",
-  "securite_sudoers": "sudo:x:27:vagrant"
+  "securite_sudoers": "sudo:x:27:vagrant",
+  "stockage": "Filesystem      Size  Used Avail Use% ...",
+  "uptime": "10:30:00 up 2 days, 3:45, 1 user",
+  "load_average": "0.15, 0.10, 0.05"
 }
 ```
 
@@ -169,8 +185,8 @@ Linux-System-Inventory-Tool/
 ├── Vagrantfile              # Configuration de la VM Debian 12
 ├── CHANGELOG.md             # Historique des versions
 ├── templates/
-│   └── dashboard.html       # Template du tableau de bord web (Flask)
+│   └── dashboard.html       # Template du tableau de bord web (Jinja2/Flask)
 ├── static/
-│   └── dashboard.css        # Styles du tableau de bord
+│   └── style.css            # Styles du tableau de bord 
 └── .gitignore
 ```

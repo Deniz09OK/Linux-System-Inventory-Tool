@@ -54,6 +54,18 @@
     </div>
   </section>
 
+  <!-- ═══ STATS ROW 2 ═══ -->
+  <section class="stats-row">
+    <div class="stat-card">
+      <span class="stat-label">⏱ UPTIME</span>
+      <span class="stat-value mono" id="uptime">{{ uptime }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">📊 LOAD AVERAGE <span class="badge badge--orange">1/5/15 min</span></span>
+      <span class="stat-value mono" id="load_average">{{ load_average }}</span>
+    </div>
+  </section>
+
   <!-- ═══ GRID PRINCIPALE ═══ -->
   <main class="main-grid">
 
@@ -77,6 +89,18 @@
       </div>
       <div class="card-body">
         <pre class="terminal" id="ports_ouverts">{{ ports_ouverts }}</pre>
+      </div>
+    </div>
+
+    <!-- Stockage -->
+    <div class="card card--full card--security">
+      <div class="card-header">
+        <span class="card-icon">⛁</span>
+        <h2>Espace disque</h2>
+        <span class="badge badge--blue">STOCKAGE</span>
+      </div>
+      <div class="card-body">
+        <pre class="terminal" id="stockage">{{ stockage }}</pre>
       </div>
     </div>
 
@@ -141,8 +165,11 @@
         document.getElementById('utilisateurs_sudo').textContent = d.securite_sudoers;
         document.getElementById('cpu_info').textContent          = d.cpu;
         document.getElementById('ports_ouverts').textContent     = d.securite_ports;
+        document.getElementById('stockage').textContent          = d.stockage;
         document.getElementById('arborescence').textContent      = d.arborescence;
         document.getElementById('processus_actifs').textContent  = d.processus;
+        document.getElementById('uptime').textContent            = d.uptime;
+        document.getElementById('load_average').textContent      = d.load_average;
         document.getElementById('version_lsit').textContent      = d.version_lsit;
         document.getElementById('footer_version').textContent    = d.version_lsit;
 

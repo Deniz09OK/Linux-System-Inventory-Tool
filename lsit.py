@@ -55,6 +55,15 @@ def collecter_donnees():
     cmd_ports = subprocess.run(["ss", "-tuln"], capture_output=True, text=True)
     ports_ouverts = cmd_ports.stdout
 
+    cmd_disk = subprocess.run(["df", "-h"], capture_output=True, text=True)
+    espace_disque = cmd_disk.stdout
+
+    cmd_uptime = subprocess.run(["uptime"], capture_output=True, text=True)
+    uptime_raw = cmd_uptime.stdout.strip()
+    parties = uptime_raw.split("load average:")
+    uptime_info = parties[0].strip().rstrip(",") if len(parties) > 0 else "Inconnu"
+    load_average = parties[1].strip() if len(parties) > 1 else "Inconnu"
+
     utilisateurs_sudo = "Aucun"
     with open("/etc/group", "r") as f:
         for ligne in f:
@@ -72,7 +81,10 @@ def collecter_donnees():
         "processus": processus_actifs,
         "arborescence": arborescence,
         "securite_ports": ports_ouverts,
-        "securite_sudoers": utilisateurs_sudo
+        "securite_sudoers": utilisateurs_sudo,
+        "stockage": espace_disque,
+        "uptime": uptime_info,
+        "load_average": load_average
     }
 
 
@@ -142,6 +154,9 @@ def mode_serve() -> None:
                                ports_ouverts=donnees["securite_ports"],
                                arborescence=donnees["arborescence"],
                                processus_actifs=donnees["processus"],
+                               stockage=donnees["stockage"],
+                               uptime=donnees["uptime"],
+                               load_average=donnees["load_average"],
                                version_lsit=version_lsit)
 
     @app.route('/api/donnees')

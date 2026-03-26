@@ -16,7 +16,7 @@ Vagrant.configure("2") do |config|
 while true; do
   echo ""
   echo "  ╔══════════════════════════════════════════╗"
-  echo "  ║   LSIT - Linux System Inventory Tool    ║"
+  echo "  ║   LSIT - Linux System Inventory Tool     ║"
   echo "  ╚══════════════════════════════════════════╝"
   echo ""
   echo "    [1]  Interface graphique  (port 8081)"
