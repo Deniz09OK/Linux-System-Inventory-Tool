@@ -4,18 +4,16 @@ LSIT est un outil d'inventaire et de cartographie d'infrastructure système dév
 
 Ce projet met en pratique les concepts d'Infrastructure as Code (IaC) et de développement d'outils d'administration en ligne de commande (CLI).
 
-## Fonctionnalités (v0.3.1)
+## Fonctionnalités (v0.5.0)
 
 - **Auto-détection** : Récupération du nom d'hôte, de la RAM totale et du modèle de CPU.
+- **Métriques Système** : Collecte de l'espace disque (`df -h`), du temps d'activité (Uptime) et de la charge système (Load Average).
 - **Audit d'activité** : Capture des processus actifs et cartographie de l'arborescence `/home/vagrant`.
 - **Audit de sécurité** : Détection des ports réseau en écoute (`ss -tuln`) et identification des utilisateurs avec privilèges sudo.
-- **Monitoring système** : Affichage de l'espace disque (`df -h`), de l'uptime et du load average.
+- **Tableau de bord web "Live"** : Interface UI/UX moderne (thème Cybersec) avec rafraîchissement asynchrone (API REST / Fetch) en temps réel, propulsé par le micro-framework Flask (port 8080).
 - **Interopérabilité** : Exportation des rapports au format texte brut (`.txt`) ou structuré (`.json`).
-- **Tableau de bord web** : Visualisation des données en temps réel via un serveur Flask intégré (port 8080), avec rafraîchissement automatique toutes les 5 secondes.
-- **API REST** : Endpoint `/api/donnees` retournant les métriques au format JSON.
 - **Menu interactif SSH** : Interface de navigation accessible directement depuis la session SSH.
-- **Horodatage** : Traçabilité précise de l'heure de l'audit.
-- **Version dynamique** : La version est lue automatiquement depuis le `CHANGELOG.md`.
+- **Horodatage & Version dynamique** : Traçabilité de l'audit et lecture automatique de la version depuis le `CHANGELOG.md`.
 - **Automatisation Cron** : Génération quotidienne automatique d'un rapport JSON à minuit.
 
 ## Prérequis
@@ -87,19 +85,19 @@ lsit -v
 
 ## Tableau de bord web
 
-Le tableau de bord web est accessible sur `http://localhost:8081` (port forwardé depuis la VM) après le lancement via `lsit --serve` ou l'option 3 du menu interactif.
+Le tableau de bord web est accessible sur `http://localhost:8080` après le lancement via `lsit --serve` ou l'option 3 du menu interactif. 
 
-Il affiche en temps réel les informations suivantes (rafraîchissement automatique toutes les 5 secondes) :
+L'interface a été conçue pour s'actualiser automatiquement et de manière asynchrone (sans rechargement de page) toutes les 5 secondes via une API interne. Elle affiche les informations suivantes :
 
 | Section | Contenu |
 | --- | --- |
 | Machine | Nom d'hôte de la machine |
 | Processeur | Modèle du CPU |
-| Mémoire RAM | Quantité totale de RAM |
-| Uptime | Temps d'activité du système |
-| Load Average | Charge moyenne (1/5/15 min) |
+| Mémoire RAM | Quantité totale de RAM avec barre de progression |
 | Sudoers | Utilisateurs avec privilèges sudo |
-| Espace disque | Sortie de `df -h` |
+| Stockage | Espace disque disponible sur les partitions (`df -h`) |
+| Uptime | Temps depuis le dernier démarrage |
+| Charge Système | Load Average sur 1, 5 et 15 minutes |
 | Ports réseau en écoute | Sortie de `ss -tuln` |
 | Arborescence /home/vagrant | Structure des dossiers (2 niveaux) |
 | Processus actifs | Sortie de `ps aux` |
@@ -143,7 +141,7 @@ Ports ouverts :
 Netid  State   Local Address:Port  ...
 ```
 
-### JSON (`rapport_lsit.json`)
+### JSON (`rapport_lsit.json` ou sortie API)
 
 ```json
 {
@@ -151,13 +149,14 @@ Netid  State   Local Address:Port  ...
   "machine": "debian-vm",
   "ram": "MemTotal: 2048000 kB",
   "cpu": "Intel(R) Core(TM) i7-...",
+  "uptime": "up 2 hours, 30 minutes",
+  "load_average": "0.01, 0.05, 0.00",
+  "stockage": "Filesystem      Size  Used Avail Use% Mounted on...",
   "processus": "...",
   "arborescence": "...",
   "securite_ports": "Netid  State   Local Address:Port  ...",
   "securite_sudoers": "sudo:x:27:vagrant",
-  "stockage": "Filesystem      Size  Used Avail Use% ...",
-  "uptime": "10:30:00 up 2 days, 3:45, 1 user",
-  "load_average": "0.15, 0.10, 0.05"
+  "version_lsit": "LSIT v0.5.0"
 }
 ```
 
