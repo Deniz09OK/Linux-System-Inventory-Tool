@@ -1,4 +1,18 @@
-## v0.5.0 - 2026-03-26
+## v0.5.0 - 2026-03-28
+
+### 📝 Autres changements
+- docs(readme): mettre à jour la documentation pour la v0.5.0 ([commit b7b4451](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/b7b44515472bb071eaeb6cfdf61547a3e7ffaa0a)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 1
+- Contributors: 1
+- Files changed: 1
+- Period: 2026-03-26 → 2026-03-28
+- Impact score: 0 🚀
+
+### 🤝 Contributors
+- Deniz09OK
+
 
 ### 🚀 Features
 - system: ajouter les métriques d'uptime et de charge système ([commit cd1e10b](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/cd1e10baa686673d47146a4d2c20928ec375bf47)) by Deniz09OK
