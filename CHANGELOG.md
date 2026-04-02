@@ -1,4 +1,21 @@
-## v0.5.0 - 2026-03-28
+## v0.5.0 - 2026-04-02
+
+### 📝 Autres changements
+- ci(pipeline): restreindre le commit du changelog et la création du tag à la branche main uniquement ([commit 1f726ef](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/1f726efe10625bb701d2086b85ba0195bf069905)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool- ([commit afbf98c](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/afbf98ce61c405941145aacdb89304c5cc89bedd)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 2
+- Period: 2026-03-28 → 2026-04-02
+- Impact score: 0 🚀
+
+### 🤝 Contributors
+- Deniz09OK
+
 
 ### 📝 Autres changements
 - docs(readme): mettre à jour la documentation pour la v0.5.0 ([commit b7b4451](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/b7b44515472bb071eaeb6cfdf61547a3e7ffaa0a)) by Deniz09OK
