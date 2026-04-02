@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - dev
   pull_request:
     branches:
       - main
+      - dev 
 
   workflow_dispatch:
     inputs:
@@ -164,7 +166,7 @@ jobs:
           echo "[AUDIT] Version bump: $bump → $new_version"
 
       - name: Generate changelog text
-        if: ${{ env.event_name == 'push' &&!startsWith(env.commit_message, 'docs(changelog)') }}
+        if: ${{ env.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'dev') && !startsWith(env.commit_message, 'docs(changelog)') }}
         id: changelog
         run: |
           echo "[AUDIT] Starting changelog generation"
@@ -341,7 +343,7 @@ jobs:
           fi
 
       - name: Commit changelog
-        if: ${{env.event_name == 'push' && !startsWith(env.commit_message, 'docs(changelog)') && env.dry_run == 'false' }}
+        if: ${{ env.event_name == 'push' && github.ref_name == 'main' && !startsWith(env.commit_message, 'docs(changelog)') && env.dry_run == 'false' }}
         run: |
           MAX_ATTEMPTS="${{ env.max_attempts }}"
           RETRY_DELAY="${{ env.retry_delay }}"
@@ -374,7 +376,7 @@ jobs:
           fi
 
       - name: Tag new version
-        if: ${{ env.event_name == 'push' && env.dry_run == 'false' }}
+        if: ${{ env.event_name == 'push' && env.dry_run == 'false' && github.ref_name == 'main' }}
         id: tag
         run: |
           MAX_ATTEMPTS="${{ env.max_attempts }}"
