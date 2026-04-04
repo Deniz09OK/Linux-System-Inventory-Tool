@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-import subprocess
 import argparse
 import json
 import os
 import threading
 import logging
-from datetime import datetime
 from flask import Flask, render_template, jsonify
+from moteur_base import choisir_moteur
 
 dossier_script = os.path.dirname(os.path.realpath(__file__))
 chemin_changelog = os.path.join(dossier_script, "CHANGELOG.md")
@@ -28,64 +27,8 @@ parser.add_argument("--format", choices=["txt", "json"], help="Génère directem
 parser.add_argument("--serve", action="store_true", help="Lance directement le tableau de bord web sur le port 8080")
 args = parser.parse_args()
 
-
-def collecter_donnees():
-    with open("/etc/hostname") as f:
-        hostname = f.read().strip()
-
-    ram_info = ""
-    with open("/proc/meminfo") as f:
-        for ligne in f:
-            if "MemTotal" in ligne:
-                ram_info = ligne.strip()
-
-    cpu_info = "Inconnu"
-    with open("/proc/cpuinfo", "r") as f:
-        for ligne in f:
-            if "model name" in ligne:
-                cpu_info = ligne.split(":")[1].strip()
-                break
-
-    cmd_ps = subprocess.run(["ps", "aux"], capture_output=True, text=True)
-    processus_actifs = cmd_ps.stdout
-
-    cmd_tree = subprocess.run(["tree", "-L", "2", "/home/vagrant"], capture_output=True, text=True)
-    arborescence = cmd_tree.stdout
-
-    cmd_ports = subprocess.run(["ss", "-tuln"], capture_output=True, text=True)
-    ports_ouverts = cmd_ports.stdout
-
-    cmd_disk = subprocess.run(["df", "-h"], capture_output=True, text=True)
-    espace_disque = cmd_disk.stdout
-
-    cmd_uptime = subprocess.run(["uptime"], capture_output=True, text=True)
-    uptime_raw = cmd_uptime.stdout.strip()
-    parties = uptime_raw.split("load average:")
-    uptime_info = parties[0].strip().rstrip(",") if len(parties) > 0 else "Inconnu"
-    load_average = parties[1].strip() if len(parties) > 1 else "Inconnu"
-
-    utilisateurs_sudo = "Aucun"
-    with open("/etc/group", "r") as f:
-        for ligne in f:
-            if ligne.startswith("sudo:"):
-                utilisateurs_sudo = ligne.strip()
-                break
-
-    date_audit = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    return {
-        "date": date_audit,
-        "machine": hostname,
-        "ram": ram_info,
-        "cpu": cpu_info,
-        "processus": processus_actifs,
-        "arborescence": arborescence,
-        "securite_ports": ports_ouverts,
-        "securite_sudoers": utilisateurs_sudo,
-        "stockage": espace_disque,
-        "uptime": uptime_info,
-        "load_average": load_average
-    }
+# Auto-détection de l'OS et initialisation du moteur approprié
+moteur_actif = choisir_moteur()
 
 
 def afficher_menu():
@@ -144,7 +87,7 @@ def mode_serve() -> None:
 
     @app.route('/')
     def dashboard():
-        donnees = collecter_donnees()
+        donnees = moteur_actif.collecter_donnees()
         return render_template('dashboard.html',
                                date_audit=donnees["date"],
                                hostname=donnees["machine"],
@@ -161,7 +104,7 @@ def mode_serve() -> None:
 
     @app.route('/api/donnees')
     def api_donnees():
-        donnees = collecter_donnees()
+        donnees = moteur_actif.collecter_donnees()
         donnees["version_lsit"] = version_lsit
         return jsonify(donnees)
 
@@ -189,11 +132,11 @@ def main():
             break
         elif choix == "1":
             print("\nCollecte des données en cours...")
-            donnees = collecter_donnees()
+            donnees = moteur_actif.collecter_donnees()
             mode_txt(donnees)
         elif choix == "2":
             print("\nCollecte des données en cours...")
-            donnees = collecter_donnees()
+            donnees = moteur_actif.collecter_donnees()
             mode_json(donnees)
         elif choix == "3":
             print("\nDémarrage du serveur web...")
@@ -206,7 +149,7 @@ if args.format or args.serve:
     if args.serve:
         mode_serve()
     else:
-        donnees = collecter_donnees()
+        donnees = moteur_actif.collecter_donnees()
         if args.format == "json":
             mode_json(donnees)
         else:
