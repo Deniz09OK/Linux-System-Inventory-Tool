@@ -1,3 +1,19 @@
+## v0.5.1 - 2026-04-04
+
+### ♻️ Refactors / Performance
+- core: Mise en place de l'architecture multi-moteur (Strategy Pattern) ([commit a92ce2c](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/a92ce2cfdad882451228b81d04c9c77750a2c6d3)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 1
+- Contributors: 1
+- Files changed: 5
+- Period: 2026-04-02 → 2026-04-04
+- Impact score: 1 🚀
+- Compare changes: [v0.5.0...v0.5.1](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.5.0...v0.5.1)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.5.0 - 2026-04-02
 
 ### 📝 Autres changements
