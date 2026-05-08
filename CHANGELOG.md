@@ -1,5 +1,22 @@
 ## v0.6.1 - 2026-05-08
 
+### 📝 Autres changements
+- ci(debian): ajouter la pipeline de tests automatisés pour Debian/Linux ([commit e18bb9b](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/e18bb9b341e6dbdcb74da4fb193eb3f5963e9258)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit fa8bffd](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/fa8bffd486adb00ab4d9fa4694496adc52183891)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 3
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 0 🚀
+
+### 🤝 Contributors
+- Deniz09OK
+
+
 ### ♻️ Refactors / Performance
 - architecture: déplacer les moteurs dans le package Moteur/ ([commit 061c2d3](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/061c2d3502fffe1a49294a718146d606eefde2fc)) by Deniz09OK
 
