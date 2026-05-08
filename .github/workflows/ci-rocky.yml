@@ -1,0 +1,75 @@
+name: CI Rocky Linux
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-rocky:
+    name: Tests sur Rocky Linux 9
+    runs-on: ubuntu-latest
+    container:
+      image: rockylinux:9
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Installer les dépendances
+        run: |
+          dnf install -y python3 python3-pip tree curl
+          pip3 install --quiet flask
+
+      - name: Vérifier les imports (architecture Moteur/)
+        run: |
+          python3 -c "from Moteur.base.moteur_base import choisir_moteur"
+          python3 -c "from Moteur.rocky.moteur_rocky import MoteurRocky"
+
+      - name: Vérifier la détection automatique de Rocky Linux
+        run: |
+          python3 -c "
+          from Moteur.base.moteur_base import choisir_moteur, _detecter_distro
+          assert _detecter_distro() == 'rocky', f'Distro détectée : {_detecter_distro()}'
+          moteur = choisir_moteur()
+          assert 'MoteurRocky' in type(moteur).__name__, f'Mauvais moteur : {type(moteur).__name__}'
+          print('Détection Rocky Linux : OK')
+          "
+
+      - name: Vérifier la version
+        run: python3 lsit.py --version
+
+      - name: Générer un rapport TXT
+        run: python3 lsit.py --format txt
+
+      - name: Vérifier que le rapport TXT existe et n'est pas vide
+        run: |
+          test -f rapport_lsit.txt
+          test -s rapport_lsit.txt
+
+      - name: Générer un rapport JSON et valider les champs
+        run: python3 lsit.py --format json
+
+      - name: Vérifier que le rapport JSON est valide
+        run: |
+          test -f rapport_lsit.json
+          python3 -c "
+          import json
+          with open('rapport_lsit.json') as f:
+              data = json.load(f)
+          champs = ['date','machine','ram','cpu','processus','arborescence',
+                    'securite_ports','securite_sudoers','stockage','uptime','load_average']
+          for champ in champs:
+              assert champ in data, f'Champ manquant : {champ}'
+          print('JSON valide — tous les champs présents.')
+          "
+
+      - name: Vérifier que le serveur Flask démarre
+        run: |
+          python3 lsit.py --serve &
+          SERVER_PID=$!
+          sleep 3
+          curl --fail --silent http://localhost:5000 > /dev/null
+          curl --fail --silent http://localhost:5000/api/donnees > /dev/null
+          kill $SERVER_PID

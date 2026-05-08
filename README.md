@@ -60,6 +60,7 @@ L'environnement est entièrement automatisé via un Vagrantfile multi-machines. 
 | --- | --- | --- |
 | Debian 12 | 5000 | 8081 |
 | FreeBSD 14 | 5000 | 8082 |
+| Rocky Linux 9 | 5000 | 8083 |
 
 ## Utilisation
 
@@ -199,12 +200,14 @@ Moteur/
 ├── base/
 │   └── moteur_base.py    ← Classe abstraite + routeur choisir_moteur()
 ├── linux/
-│   └── moteur_linux.py   ← Implémentation Linux (/proc, ss, sudo)
+│   └── moteur_linux.py   ← Implémentation Debian/Linux (/proc, ss, sudo)
+├── rocky/
+│   └── moteur_rocky.py   ← Implémentation Rocky Linux (hérite Linux, wheel)
 └── freebsd/
     └── moteur_freebsd.py ← Implémentation FreeBSD (sysctl, sockstat, wheel)
 ```
 
-La détection de l'OS est automatique au démarrage via `platform.system()`. Aucune configuration manuelle n'est nécessaire.
+La détection est automatique : `platform.system()` identifie la famille OS, puis `/etc/os-release` précise la distribution Linux. Aucune configuration manuelle n'est nécessaire.
 
 ## CI/CD
 
@@ -215,6 +218,7 @@ La détection de l'OS est automatique au démarrage via `platform.system()`. Auc
 | Workflow | OS cible | Runner | Durée estimée |
 | --- | --- | --- | --- |
 | `ci-debian.yml` | Debian / Linux | `ubuntu-latest` natif | ~1 min |
+| `ci-rocky.yml` | Rocky Linux 9 | `ubuntu-latest` + container Docker | ~2 min |
 | `ci-freebsd.yml` | FreeBSD 14.1 | `ubuntu-latest` + VM QEMU | ~3-5 min |
 
 Chaque pipeline valide les étapes suivantes :
@@ -245,6 +249,7 @@ Linux-System-Inventory-Tool/
 ├── .github/
 │   └── workflows/
 │       ├── ci-debian.yml         # Pipeline de tests sur Debian/Linux
+│       ├── ci-rocky.yml          # Pipeline de tests sur Rocky Linux 9 (Docker)
 │       ├── ci-freebsd.yml        # Pipeline de tests sur FreeBSD 14 (QEMU)
 │       └── versionning.yml       # Workflow de versioning sémantique automatique
 ├── Moteur/
@@ -252,6 +257,8 @@ Linux-System-Inventory-Tool/
 │   │   └── moteur_base.py        # Classe abstraite + routeur choisir_moteur()
 │   ├── linux/
 │   │   └── moteur_linux.py       # Moteur Debian/Linux (/proc, ss, sudo)
+│   ├── rocky/
+│   │   └── moteur_rocky.py       # Moteur Rocky Linux 9 (hérite Linux, wheel)
 │   └── freebsd/
 │       └── moteur_freebsd.py     # Moteur FreeBSD 14 (sysctl, sockstat, wheel)
 ├── lsit.py                       # Script principal (CLI, menu, Flask)

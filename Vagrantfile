@@ -164,4 +164,74 @@ EOF
     SHELL
   end
 
+  # ─── Machine Rocky Linux 9 ───────────────────────────────────────────────────
+  config.vm.define "rocky" do |rocky|
+    rocky.vm.box = "rockylinux/9"
+    rocky.vm.network "forwarded_port", guest: 5000, host: 8083
+
+    rocky.vm.provision "shell", inline: <<-SHELL
+      dnf install -y python3 python3-pip tree
+      pip3 install --quiet flask
+      chmod +x /vagrant/lsit.py
+      ln -sf /vagrant/lsit.py /usr/local/bin/lsit
+      echo "0 0 * * * root /usr/local/bin/lsit --format json" > /etc/cron.d/lsit_audit
+
+      cat > /etc/profile.d/lsit-welcome.sh << 'EOF'
+#!/bin/bash
+[[ $- == *i* ]] || return
+
+while true; do
+  echo ""
+  echo "  ╔══════════════════════════════════════════╗"
+  echo "  ║   LSIT - Rocky Linux System Inventory    ║"
+  echo "  ╚══════════════════════════════════════════╝"
+  echo ""
+  echo "    [1]  Interface graphique  (port 8083)"
+  echo "    [2]  Rapport TXT"
+  echo "    [3]  Rapport JSON"
+  echo "    [4]  Shell uniquement"
+  echo "    [5]  Quitter"
+  echo ""
+  read -rp "  Votre choix [1-5] : " lsit_choix
+
+  case "$lsit_choix" in
+    1)
+      echo ""
+      echo "  Démarrage du tableau de bord..."
+      echo "  --> Ouvre http://localhost:8083 dans ton navigateur."
+      echo '  Tapez "exit" ou "end" pour arrêter et revenir ici.'
+      echo ""
+      lsit --serve
+      ;;
+    2)
+      echo ""
+      lsit --format txt
+      ;;
+    3)
+      echo ""
+      lsit --format json
+      ;;
+    4)
+      echo ""
+      echo "  Commandes disponibles :"
+      echo "    lsit --format txt   --> rapport TXT"
+      echo "    lsit --format json  --> rapport JSON"
+      echo "    lsit --serve        --> tableau de bord web (port 8083)"
+      echo ""
+      break
+      ;;
+    5|exit|end)
+      echo ""
+      exit
+      ;;
+    *)
+      echo "  Choix invalide. Veuillez entrer 1, 2, 3, 4 ou 5."
+      ;;
+  esac
+done
+EOF
+      chmod +x /etc/profile.d/lsit-welcome.sh
+    SHELL
+  end
+
 end

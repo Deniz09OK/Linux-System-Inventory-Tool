@@ -85,16 +85,33 @@ class MoteurBase(ABC):
         }
 
 
+def _detecter_distro() -> str:
+    """Lit l'identifiant de distribution depuis /etc/os-release."""
+    try:
+        with open("/etc/os-release") as f:
+            for ligne in f:
+                if ligne.startswith("ID="):
+                    return ligne.split("=")[1].strip().strip('"').lower()
+    except FileNotFoundError:
+        pass
+    return "linux"
+
+
 def choisir_moteur() -> MoteurBase:
     """
     Routeur intelligent qui détecte l'OS et retourne le moteur approprié.
-    Utilise platform.system() qui renvoie "Linux", "FreeBSD", "Windows", etc.
+    Utilise platform.system() puis /etc/os-release pour les distributions Linux.
     """
     systeme = platform.system()
 
     if systeme == "Linux":
-        from Moteur.linux.moteur_linux import MoteurLinux
-        return MoteurLinux()
+        distro = _detecter_distro()
+        if distro in ("rocky", "rhel", "centos", "almalinux"):
+            from Moteur.rocky.moteur_rocky import MoteurRocky
+            return MoteurRocky()
+        else:
+            from Moteur.linux.moteur_linux import MoteurLinux
+            return MoteurLinux()
 
     elif systeme == "FreeBSD":
         from Moteur.freebsd.moteur_freebsd import MoteurFreeBSD
@@ -103,5 +120,5 @@ def choisir_moteur() -> MoteurBase:
     else:
         raise NotImplementedError(
             f"Système d'exploitation non supporté : {systeme}. "
-            f"Seuls Linux et FreeBSD sont pris en charge."
+            f"Seuls Linux, Rocky Linux et FreeBSD sont pris en charge."
         )
