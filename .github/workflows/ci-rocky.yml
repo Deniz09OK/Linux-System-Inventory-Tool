@@ -19,7 +19,7 @@ jobs:
 
       - name: Installer les dépendances
         run: |
-          dnf install -y python3 python3-pip tree
+          dnf install -y python3 python3-pip tree procps-ng iproute
           pip3 install --quiet flask
 
       - name: Vérifier les imports (architecture Moteur/)
