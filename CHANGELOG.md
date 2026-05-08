@@ -1,3 +1,19 @@
+## v0.6.3 - 2026-05-08
+
+### 🐛 Fixes
+- ci: remplacer FreeBSD 14.2 par 14.1 (image 14.2 non disponible dans le builder v0.8.0) ([commit 522e907](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/522e907c49e8ccce7360412138fa96a2e94cbbfe)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 1
+- Contributors: 1
+- Files changed: 1
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 2 🚀
+- Compare changes: [v0.6.2...v0.6.3](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.6.2...v0.6.3)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.6.2 - 2026-05-08
 
 ### 📝 Autres changements
