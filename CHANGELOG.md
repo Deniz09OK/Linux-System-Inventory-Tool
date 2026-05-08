@@ -1,5 +1,22 @@
 ## v0.6.0 - 2026-05-08
 
+### 📝 Autres changements
+- chore: supprimer __pycache__ du suivi git ([commit 9f7e15b](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/9f7e15bb1849f0eac9b1aea5dd6a1f13ed408e6a)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit 96dd998](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/96dd998c91283a4a3901a19afd7b8c6b29f2c476)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 3
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 0 🚀
+
+### 🤝 Contributors
+- Deniz09OK
+
+
 ### 🚀 Features
 - freebsd: ajout du support FreeBSD 14 et robustesse de la gestion d'erreurs ([commit 6e267e5](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/6e267e5147d8416f97085cda45c3b7034e98fb06)) by Deniz09OK
 
