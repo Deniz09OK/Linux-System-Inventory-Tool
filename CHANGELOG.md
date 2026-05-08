@@ -1,3 +1,22 @@
+## v0.7.2 - 2026-05-08
+
+### 🐛 Fixes
+- ci: ajouter procps-ng et iproute sur Rocky Linux 9 (ps et ss absents de l'image Docker minimale) ([commit 1213919](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/121391927c5751e82770227db58d6cd52148d83c)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit 4f9ea04](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/4f9ea049a594fb99599682f979e653da22e62663)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 2
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 2 🚀
+- Compare changes: [v0.7.1...v0.7.2](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.7.1...v0.7.2)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.7.1 - 2026-05-08
 
 ### 🐛 Fixes
