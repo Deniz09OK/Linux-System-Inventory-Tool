@@ -1,3 +1,22 @@
+## v0.6.1 - 2026-05-08
+
+### ♻️ Refactors / Performance
+- architecture: déplacer les moteurs dans le package Moteur/ ([commit 061c2d3](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/061c2d3502fffe1a49294a718146d606eefde2fc)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit f7a087a](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/f7a087a56e41d511b57ec5b548d64a042ce98479)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 11
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 1 🚀
+- Compare changes: [v0.6.0...v0.6.1](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.6.0...v0.6.1)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.6.0 - 2026-05-08
 
 ### 📝 Autres changements
