@@ -1,5 +1,22 @@
 ## v0.6.4 - 2026-05-08
 
+### 📝 Autres changements
+- docs(readme): mettre à jour la documentation pour la v0.6.0 ([commit 0160aac](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/0160aac0f97909fa58dced75354009b04e461486)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit d5edd53](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/d5edd53e6a82f8865a6a9e49a2ed7c19e9615acd)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 2
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 0 🚀
+
+### 🤝 Contributors
+- Deniz09OK
+
+
 ### 🐛 Fixes
 - ci: ajouter IGNORE_OSVERSION=yes pour contourner le mismatch du dépôt pkg FreeBSD en CI ([commit c917aef](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/c917aef3b2593b9b32979fe2a54b5dcb2fe71c7b)) by Deniz09OK
 
