@@ -22,8 +22,8 @@ jobs:
           version: "14.1"
           run: |
             # Installer les dépendances
-            sudo pkg update -q
-            sudo pkg install -y python3 tree curl
+            sudo env IGNORE_OSVERSION=yes pkg update -q
+            sudo env IGNORE_OSVERSION=yes pkg install -y python3 tree curl
 
             # Bootstrap pip puis Flask
             python3 -m ensurepip --upgrade 2>/dev/null || true
