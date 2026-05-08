@@ -206,7 +206,26 @@ Moteur/
 
 La détection de l'OS est automatique au démarrage via `platform.system()`. Aucune configuration manuelle n'est nécessaire.
 
-## CI/CD — Versioning automatique
+## CI/CD
+
+### Tests automatisés
+
+À chaque push sur `main` ou pull request, deux pipelines de tests s'exécutent en parallèle :
+
+| Workflow | OS cible | Runner | Durée estimée |
+| --- | --- | --- | --- |
+| `ci-debian.yml` | Debian / Linux | `ubuntu-latest` natif | ~1 min |
+| `ci-freebsd.yml` | FreeBSD 14.1 | `ubuntu-latest` + VM QEMU | ~3-5 min |
+
+Chaque pipeline valide les étapes suivantes :
+
+1. Imports de l'architecture `Moteur/`
+2. Commande `--version`
+3. Génération du rapport TXT + vérification du fichier
+4. Génération du rapport JSON + validation de tous les champs
+5. Démarrage du serveur Flask + requêtes sur `/` et `/api/donnees`
+
+### Versioning automatique
 
 Le projet utilise un workflow GitHub Actions (`versionning.yml`) pour gérer le versioning sémantique automatiquement à chaque push sur `main`.
 
@@ -225,7 +244,9 @@ Le workflow génère et commit automatiquement le `CHANGELOG.md`, puis crée et 
 Linux-System-Inventory-Tool/
 ├── .github/
 │   └── workflows/
-│       └── versionning.yml       # Workflow CI/CD de versioning sémantique
+│       ├── ci-debian.yml         # Pipeline de tests sur Debian/Linux
+│       ├── ci-freebsd.yml        # Pipeline de tests sur FreeBSD 14 (QEMU)
+│       └── versionning.yml       # Workflow de versioning sémantique automatique
 ├── Moteur/
 │   ├── base/
 │   │   └── moteur_base.py        # Classe abstraite + routeur choisir_moteur()
