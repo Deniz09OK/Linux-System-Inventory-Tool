@@ -73,7 +73,8 @@ def mode_txt(donnees: dict) -> None:
         f.write(donnees["securite_ports"])
 
     print("Rapport TXT généré avec succès !")
-    input("Appuyez sur Entrée pour revenir au menu...")
+    if sys.stdin.isatty():
+        input("Appuyez sur Entrée pour revenir au menu...")
 
 
 def mode_json(donnees: dict) -> None:
@@ -81,7 +82,8 @@ def mode_json(donnees: dict) -> None:
         json.dump(donnees, f, indent=4)
 
     print("Rapport JSON généré avec succès !")
-    input("Appuyez sur Entrée pour revenir au menu...")
+    if sys.stdin.isatty():
+        input("Appuyez sur Entrée pour revenir au menu...")
 
 
 def mode_serve() -> None:

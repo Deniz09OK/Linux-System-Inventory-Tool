@@ -1,0 +1,68 @@
+name: CI Debian
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-debian:
+    name: Tests sur Debian/Linux
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Configurer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Installer les dépendances
+        run: |
+          pip install flask
+          sudo apt-get install -y tree
+
+      - name: Vérifier les imports (architecture Moteur/)
+        run: |
+          python3 -c "from Moteur.base.moteur_base import choisir_moteur"
+          python3 -c "from Moteur.linux.moteur_linux import MoteurLinux"
+
+      - name: Vérifier la version
+        run: python3 lsit.py --version
+
+      - name: Générer un rapport TXT
+        run: python3 lsit.py --format txt
+
+      - name: Vérifier que le rapport TXT existe et n'est pas vide
+        run: |
+          test -f rapport_lsit.txt
+          test -s rapport_lsit.txt
+
+      - name: Générer un rapport JSON
+        run: python3 lsit.py --format json
+
+      - name: Vérifier que le rapport JSON est valide
+        run: |
+          test -f rapport_lsit.json
+          python3 -c "
+          import json
+          with open('rapport_lsit.json') as f:
+              data = json.load(f)
+          champs = ['date','machine','ram','cpu','processus','arborescence',
+                    'securite_ports','securite_sudoers','stockage','uptime','load_average']
+          for champ in champs:
+              assert champ in data, f'Champ manquant : {champ}'
+          print('JSON valide — tous les champs présents.')
+          "
+
+      - name: Vérifier que le serveur Flask démarre
+        run: |
+          python3 lsit.py --serve &
+          SERVER_PID=$!
+          sleep 3
+          curl --fail --silent http://localhost:5000 > /dev/null
+          curl --fail --silent http://localhost:5000/api/donnees > /dev/null
+          kill $SERVER_PID
