@@ -9,7 +9,7 @@ from typing import Dict
 class MoteurBase(ABC):
     """
     Classe abstraite définissant le contrat que tout moteur OS doit respecter.
-    Impossible à instancier directement - les enfants (Linux, FreeBSD) 
+    Impossible à instancier directement - les enfants (Linux, FreeBSD)
     DOIVENT implémenter toutes les méthodes @abstractmethod.
     """
 
@@ -93,11 +93,11 @@ def choisir_moteur() -> MoteurBase:
     systeme = platform.system()
 
     if systeme == "Linux":
-        from moteur_linux import MoteurLinux
+        from Moteur.linux.moteur_linux import MoteurLinux
         return MoteurLinux()
 
     elif systeme == "FreeBSD":
-        from moteur_freebsd import MoteurFreeBSD
+        from Moteur.freebsd.moteur_freebsd import MoteurFreeBSD
         return MoteurFreeBSD()
 
     else:

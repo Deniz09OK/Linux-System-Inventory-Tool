@@ -13,7 +13,7 @@ dossier_script = os.path.dirname(os.path.realpath(__file__))
 if dossier_script not in sys.path:
     sys.path.insert(0, dossier_script)
 
-from moteur_base import choisir_moteur
+from Moteur.base.moteur_base import choisir_moteur
 chemin_changelog = os.path.join(dossier_script, "CHANGELOG.md")
 
 version_lsit = "LSIT (version inconnue)"

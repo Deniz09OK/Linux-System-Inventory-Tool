@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
-from moteur_base import MoteurBase
+from Moteur.base.moteur_base import MoteurBase
 
 
 class MoteurFreeBSD(MoteurBase):

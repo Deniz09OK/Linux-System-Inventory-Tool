@@ -92,7 +92,7 @@ EOF
 
       # Supprimer les retours chariot Windows (\r) des scripts Python
       # rsync depuis Windows envoie des fichiers CRLF qui cassent le shebang sur FreeBSD
-      sed -i '' 's/\r$//' /vagrant/lsit.py /vagrant/moteur_base.py /vagrant/moteur_freebsd.py /vagrant/moteur_linux.py
+      sed -i '' 's/\r$//' /vagrant/lsit.py /vagrant/Moteur/base/moteur_base.py /vagrant/Moteur/linux/moteur_linux.py /vagrant/Moteur/freebsd/moteur_freebsd.py
 
       # Rendre lsit exécutable et accessible globalement
       chmod +x /vagrant/lsit.py
