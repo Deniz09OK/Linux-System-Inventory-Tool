@@ -1,3 +1,22 @@
+## v0.6.2 - 2026-05-08
+
+### 🐛 Fixes
+- ci: corriger le blocage de mode_serve() en environnement non interactif ([commit e64f8e5](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/e64f8e537671816efc846b57960cb8781ea1397d)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit 9ccf502](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/9ccf502a2c9508875ab65d095e16b680cdbe5392)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 2
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 2 🚀
+- Compare changes: [v0.6.1...v0.6.2](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.6.1...v0.6.2)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.6.1 - 2026-05-08
 
 ### 📝 Autres changements
