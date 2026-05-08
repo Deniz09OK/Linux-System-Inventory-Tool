@@ -1,0 +1,70 @@
+name: CI FreeBSD
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-freebsd:
+    name: Tests sur FreeBSD 14
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Tests sur FreeBSD 14
+        uses: cross-platform-actions/action@v0.25.0
+        with:
+          operating_system: freebsd
+          version: "14.2"
+          run: |
+            # Installer les dépendances
+            sudo pkg update -q
+            sudo pkg install -y python3 tree curl
+
+            # Bootstrap pip puis Flask
+            python3 -m ensurepip --upgrade 2>/dev/null || true
+            python3 -m pip install --quiet flask
+
+            # Supprimer les retours chariot Windows (\r)
+            sed -i '' 's/\r$//' lsit.py \
+              Moteur/base/moteur_base.py \
+              Moteur/linux/moteur_linux.py \
+              Moteur/freebsd/moteur_freebsd.py
+
+            # Vérifier les imports (architecture Moteur/)
+            python3 -c "from Moteur.base.moteur_base import choisir_moteur"
+            python3 -c "from Moteur.freebsd.moteur_freebsd import MoteurFreeBSD"
+
+            # Vérifier la version
+            python3 lsit.py --version
+
+            # Générer un rapport TXT
+            python3 lsit.py --format txt
+            test -f rapport_lsit.txt
+            test -s rapport_lsit.txt
+
+            # Générer un rapport JSON et valider les champs
+            python3 lsit.py --format json
+            test -f rapport_lsit.json
+            python3 -c "
+            import json
+            with open('rapport_lsit.json') as f:
+                data = json.load(f)
+            champs = ['date','machine','ram','cpu','processus','arborescence',
+                      'securite_ports','securite_sudoers','stockage','uptime','load_average']
+            for champ in champs:
+                assert champ in data, f'Champ manquant : {champ}'
+            print('JSON valide — tous les champs présents.')
+            "
+
+            # Vérifier que le serveur Flask démarre
+            python3 lsit.py --serve &
+            SERVER_PID=$!
+            sleep 3
+            curl --fail --silent http://localhost:5000 > /dev/null
+            curl --fail --silent http://localhost:5000/api/donnees > /dev/null
+            kill $SERVER_PID
