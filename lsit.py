@@ -2,12 +2,18 @@
 import argparse
 import json
 import os
+import sys
 import threading
 import logging
-from flask import Flask, render_template, jsonify
-from moteur_base import choisir_moteur
 
+# Résolution du répertoire réel du script (suit les symlinks).
+# Indispensable quand lsit est invoqué via /usr/local/bin/lsit → /vagrant/lsit.py :
+# sans ça, Python cherche moteur_base dans /usr/local/bin/ et ne le trouve pas.
 dossier_script = os.path.dirname(os.path.realpath(__file__))
+if dossier_script not in sys.path:
+    sys.path.insert(0, dossier_script)
+
+from moteur_base import choisir_moteur
 chemin_changelog = os.path.join(dossier_script, "CHANGELOG.md")
 
 version_lsit = "LSIT (version inconnue)"
@@ -24,7 +30,7 @@ except FileNotFoundError:
 parser = argparse.ArgumentParser(description="LSIT - Linux System Inventory Tool : Cartographie l'infrastructure locale.")
 parser.add_argument("-v", "--version", action="version", version=version_lsit)
 parser.add_argument("--format", choices=["txt", "json"], help="Génère directement un rapport sans passer par le menu")
-parser.add_argument("--serve", action="store_true", help="Lance directement le tableau de bord web sur le port 8080")
+parser.add_argument("--serve", action="store_true", help="Lance directement le tableau de bord web sur le port 5000")
 args = parser.parse_args()
 
 # Auto-détection de l'OS et initialisation du moteur approprié
@@ -79,6 +85,13 @@ def mode_json(donnees: dict) -> None:
 
 
 def mode_serve() -> None:
+    try:
+        from flask import Flask, render_template, jsonify
+    except ImportError:
+        print("ERREUR : Flask n'est pas installé. Exécutez : pip install flask")
+        input("Appuyez sur Entrée pour revenir au menu...")
+        return
+
     app = Flask(__name__, template_folder=os.path.join(dossier_script, "templates"),
                           static_folder=os.path.join(dossier_script, "static"))
 
@@ -108,13 +121,25 @@ def mode_serve() -> None:
         donnees["version_lsit"] = version_lsit
         return jsonify(donnees)
 
-    PORT = 8080
-    print(f"\nTableau de bord Flask disponible sur : http://localhost:{PORT}")
+    PORT = 5000
+    print(f"\nDémarrage du serveur Flask sur le port interne {PORT}...")
     print('Tapez "exit" ou "end" pour arrêter le serveur et revenir au menu.\n')
 
-    thread_serveur = threading.Thread(target=app.run, kwargs={'host': '0.0.0.0', 'port': PORT, 'use_reloader': False})
+    def lancer_serveur():
+        try:
+            app.run(host='0.0.0.0', port=PORT, use_reloader=False)
+        except Exception as e:
+            print(f"\nERREUR: Flask n'a pas pu démarrer (port {PORT} déjà utilisé ?) : {e}")
+
+    thread_serveur = threading.Thread(target=lancer_serveur)
     thread_serveur.daemon = True
     thread_serveur.start()
+
+    import time
+    time.sleep(1)
+    if not thread_serveur.is_alive():
+        print("Le serveur s'est arrêté immédiatement. Vérifiez l'erreur ci-dessus.")
+        return
 
     while True:
         commande = input("> ").strip().lower()
@@ -131,13 +156,21 @@ def main():
         if choix in ("exit", "end", "4"):
             break
         elif choix == "1":
-            print("\nCollecte des données en cours...")
-            donnees = moteur_actif.collecter_donnees()
-            mode_txt(donnees)
+            try:
+                print("\nCollecte des données en cours...")
+                donnees = moteur_actif.collecter_donnees()
+                mode_txt(donnees)
+            except Exception as e:
+                print(f"\nERREUR lors de la génération du rapport TXT : {e}")
+                input("Appuyez sur Entrée pour revenir au menu...")
         elif choix == "2":
-            print("\nCollecte des données en cours...")
-            donnees = moteur_actif.collecter_donnees()
-            mode_json(donnees)
+            try:
+                print("\nCollecte des données en cours...")
+                donnees = moteur_actif.collecter_donnees()
+                mode_json(donnees)
+            except Exception as e:
+                print(f"\nERREUR lors de la génération du rapport JSON : {e}")
+                input("Appuyez sur Entrée pour revenir au menu...")
         elif choix == "3":
             print("\nDémarrage du serveur web...")
             mode_serve()
@@ -146,13 +179,17 @@ def main():
 
 
 if args.format or args.serve:
-    if args.serve:
-        mode_serve()
-    else:
-        donnees = moteur_actif.collecter_donnees()
-        if args.format == "json":
-            mode_json(donnees)
+    try:
+        if args.serve:
+            mode_serve()
         else:
-            mode_txt(donnees)
+            donnees = moteur_actif.collecter_donnees()
+            if args.format == "json":
+                mode_json(donnees)
+            else:
+                mode_txt(donnees)
+    except Exception as e:
+        print(f"\nERREUR : {e}")
+        sys.exit(1)
 else:
     main()

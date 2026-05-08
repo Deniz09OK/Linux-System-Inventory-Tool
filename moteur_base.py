@@ -97,13 +97,8 @@ def choisir_moteur() -> MoteurBase:
         return MoteurLinux()
 
     elif systeme == "FreeBSD":
-        # TODO: À implémenter dans l'étape suivante
-        # from moteur_freebsd import MoteurFreeBSD
-        # return MoteurFreeBSD()
-        raise NotImplementedError(
-            f"Le moteur FreeBSD n'est pas encore implémenté. "
-            f"OS détecté : {systeme}"
-        )
+        from moteur_freebsd import MoteurFreeBSD
+        return MoteurFreeBSD()
 
     else:
         raise NotImplementedError(
