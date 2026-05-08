@@ -1,5 +1,19 @@
 ## v0.6.2 - 2026-05-08
 
+### 📝 Autres changements
+- ci(freebsd): ajouter la pipeline de tests automatisés pour FreeBSD 14 ([commit 03350ec](https:github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/03350ec541393d621d0912f9a94c816134d67977)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 1
+- Contributors: 1
+- Files changed: 1
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 0 🚀
+
+### 🤝 Contributors
+- Deniz09OK
+
+
 ### 🐛 Fixes
 - ci: corriger le blocage de mode_serve() en environnement non interactif ([commit e64f8e5](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/e64f8e537671816efc846b57960cb8781ea1397d)) by Deniz09OK
 
