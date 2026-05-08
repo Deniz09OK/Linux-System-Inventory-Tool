@@ -1,3 +1,19 @@
+## v0.6.0 - 2026-05-08
+
+### 🚀 Features
+- freebsd: ajout du support FreeBSD 14 et robustesse de la gestion d'erreurs ([commit 6e267e5](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/6e267e5147d8416f97085cda45c3b7034e98fb06)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 1
+- Contributors: 1
+- Files changed: 6
+- Period: 2026-04-04 → 2026-05-08
+- Impact score: 3 🚀
+- Compare changes: [v0.5.1...v0.6.0](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.5.1...v0.6.0)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.5.1 - 2026-04-04
 
 ### ♻️ Refactors / Performance
