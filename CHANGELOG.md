@@ -1,3 +1,22 @@
+## v0.7.1 - 2026-05-08
+
+### 🐛 Fixes
+- ci: retirer curl de dnf install sur Rocky Linux 9 (conflit avec curl-minimal pré-installé) ([commit cdcacc7](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/cdcacc7437643d947a0e4e097f1b71f7c11f7c72)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit 2bb784a](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/2bb784a054b4bf0cc3eb42b834720ad118be09d2)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 2
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 2 🚀
+- Compare changes: [v0.7.0...v0.7.1](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.7.0...v0.7.1)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.7.0 - 2026-05-08
 
 ### 🚀 Features
