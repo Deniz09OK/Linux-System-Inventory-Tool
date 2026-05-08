@@ -1,3 +1,22 @@
+## v0.7.0 - 2026-05-08
+
+### 🚀 Features
+- rocky: ajouter le support Rocky Linux 9 ([commit 5a4d834](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/5a4d8343c034523e39d5e7a5fd093f059634748e)) by Deniz09OK
+
+### 🔀 Merges
+- Merge branch 'main' of https://github.com/Deniz09OK/Linux-System-Inventory-Tool ([commit 34cff70](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/34cff7060262524717b4dad88808762c5c6eecc1)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 3
+- Contributors: 1
+- Files changed: 7
+- Period: 2026-05-08 → 2026-05-08
+- Impact score: 3 🚀
+- Compare changes: [v0.6.4...v0.7.0](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.6.4...v0.7.0)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.6.4 - 2026-05-08
 
 ### 📝 Autres changements
