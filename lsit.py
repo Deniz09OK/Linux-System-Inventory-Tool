@@ -143,11 +143,14 @@ def mode_serve() -> None:
         print("Le serveur s'est arrêté immédiatement. Vérifiez l'erreur ci-dessus.")
         return
 
-    while True:
-        commande = input("> ").strip().lower()
-        if commande in ("exit", "end"):
-            print("Serveur arrêté. (Appuyez sur Entrée pour continuer)")
-            break
+    if sys.stdin.isatty():
+        while True:
+            commande = input("> ").strip().lower()
+            if commande in ("exit", "end"):
+                print("Serveur arrêté. (Appuyez sur Entrée pour continuer)")
+                break
+    else:
+        thread_serveur.join()
 
 
 def main():
