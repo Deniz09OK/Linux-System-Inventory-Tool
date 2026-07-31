@@ -7,69 +7,50 @@ from typing import Dict
 
 
 class MoteurBase(ABC):
-    """
-    Classe abstraite définissant le contrat que tout moteur OS doit respecter.
-    Impossible à instancier directement - les enfants (Linux, FreeBSD)
-    DOIVENT implémenter toutes les méthodes @abstractmethod.
-    """
-
     @abstractmethod
     def obtenir_hostname(self) -> str:
-        """Retourne le nom de la machine."""
         pass
 
     @abstractmethod
     def obtenir_ram(self) -> str:
-        """Retourne les informations sur la mémoire totale."""
         pass
 
     @abstractmethod
     def obtenir_cpu(self) -> str:
-        """Retourne le modèle du processeur."""
         pass
 
     @abstractmethod
     def obtenir_processus(self) -> str:
-        """Retourne la liste des processus actifs."""
         pass
 
     @abstractmethod
     def obtenir_arborescence(self, chemin: str, profondeur: int = 2) -> str:
-        """Retourne l'arborescence d'un dossier."""
         pass
 
     @abstractmethod
     def obtenir_ports_ouverts(self) -> str:
-        """Retourne la liste des ports ouverts."""
         pass
 
     @abstractmethod
     def obtenir_sudoers(self) -> str:
-        """Retourne les utilisateurs ayant des droits sudo/wheel."""
         pass
 
     @abstractmethod
     def obtenir_stockage(self) -> str:
-        """Retourne l'espace disque."""
         pass
 
     @abstractmethod
     def obtenir_uptime(self) -> str:
-        """Retourne le temps de fonctionnement."""
         pass
 
     @abstractmethod
     def obtenir_load_average(self) -> str:
-        """Retourne la charge système."""
         pass
 
-    # Méthode NON abstraite (commune à tous les OS)
     def obtenir_date_audit(self) -> str:
-        """Retourne la date actuelle - identique sur tous les OS."""
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     def collecter_donnees(self) -> Dict[str, str]:
-        """Collecte toutes les données et retourne un dictionnaire."""
         return {
             "date": self.obtenir_date_audit(),
             "machine": self.obtenir_hostname(),
@@ -86,7 +67,6 @@ class MoteurBase(ABC):
 
 
 def _detecter_distro() -> str:
-    """Lit l'identifiant de distribution depuis /etc/os-release."""
     try:
         with open("/etc/os-release") as f:
             for ligne in f:
@@ -98,10 +78,6 @@ def _detecter_distro() -> str:
 
 
 def choisir_moteur() -> MoteurBase:
-    """
-    Routeur intelligent qui détecte l'OS et retourne le moteur approprié.
-    Utilise platform.system() puis /etc/os-release pour les distributions Linux.
-    """
     systeme = platform.system()
 
     if systeme == "Linux":

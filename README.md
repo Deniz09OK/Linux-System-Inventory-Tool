@@ -229,6 +229,23 @@ Chaque pipeline valide les étapes suivantes :
 4. Génération du rapport JSON + validation de tous les champs
 5. Démarrage du serveur Flask + requêtes sur `/` et `/api/donnees`
 
+### Tests locaux (Vagrant + Playwright)
+
+En complément de la CI ci-dessus (qui teste chaque OS isolément, sans passer par Vagrant/SSH), une suite de tests `pytest` reproduit le parcours réel d'un utilisateur sur les 3 VMs du `Vagrantfile` : connexion SSH, navigation dans le menu interactif (rapport TXT/JSON, shell), et affichage du tableau de bord dans un vrai navigateur via [Playwright](https://playwright.dev/).
+
+Les rapports TXT et JSON ne sont pas juste vérifiés comme générés : leur **contenu** est validé (présence de toutes les sections attendues pour le TXT, de tous les champs attendus pour le JSON), et le dashboard est vérifié dans un vrai DOM (chaque section affiche des données, aucune requête ni erreur JS en échec).
+
+Ces tests nécessitent Vagrant + VirtualBox en local et ne tournent **pas** dans la CI GitHub (pas de virtualisation imbriquée disponible sur les runners standards).
+
+```bash
+pip install -r requirements-test.txt
+playwright install chromium
+
+pytest tests/ -v
+```
+
+Au premier lancement, les 3 VMs sont démarrées automatiquement (`vagrant up`) si elles ne le sont pas déjà. Le navigateur s'ouvre visiblement en local ; en CI (variable d'environnement `CI` définie), il tournerait en headless.
+
 ### Versioning automatique
 
 Le projet utilise un workflow GitHub Actions (`versionning.yml`) pour gérer le versioning sémantique automatiquement à chaque push sur `main`.

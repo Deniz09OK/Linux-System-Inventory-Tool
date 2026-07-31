@@ -30,7 +30,6 @@ parser.add_argument("--format", choices=["txt", "json"], help="Génère directem
 parser.add_argument("--serve", action="store_true", help="Lance directement le tableau de bord web sur le port 5000")
 args = parser.parse_args()
 
-# Auto-détection de l'OS et initialisation du moteur approprié
 moteur_actif = choisir_moteur()
 
 
