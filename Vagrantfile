@@ -166,12 +166,32 @@ EOF
 
   # ─── Machine Rocky Linux 9 ───────────────────────────────────────────────────
   config.vm.define "rocky" do |rocky|
-    rocky.vm.box = "rockylinux/9"
+    rocky.vm.box = "generic/rocky9"
+    rocky.vbguest.auto_update = false
     rocky.vm.network "forwarded_port", guest: 5000, host: 8083
 
+    rocky.vm.synced_folder ".", "/vagrant", type: "rsync",
+      rsync__exclude: [".git/", ".vagrant/", "__pycache__/"]
+
     rocky.vm.provision "shell", inline: <<-SHELL
+      # dnf update complet d'abord : installer seulement python3/pip/tree upgrade
+      # openssl-libs sans reconstruire openssh-server dans la meme passe, ce qui
+      # casse sshd ("OpenSSL version mismatch"). Un update global garde tout coherent.
+      dnf update -y
       dnf install -y python3 python3-pip tree
       pip3 install --quiet flask
+
+      # firewalld bloque tout par defaut sauf cockpit/dhcpv6-client/ssh ;
+      # sans ca le dashboard Flask (port 5000) est inaccessible depuis l'hote.
+      firewall-cmd --permanent --add-port=5000/tcp
+      firewall-cmd --reload
+
+      # Supprimer les retours chariot Windows (\r)
+      sed -i 's/\r$//' /vagrant/lsit.py \
+        /vagrant/Moteur/base/moteur_base.py \
+        /vagrant/Moteur/linux/moteur_linux.py \
+        /vagrant/Moteur/rocky/moteur_rocky.py
+
       chmod +x /vagrant/lsit.py
       ln -sf /vagrant/lsit.py /usr/local/bin/lsit
       echo "0 0 * * * root /usr/local/bin/lsit --format json" > /etc/cron.d/lsit_audit
@@ -230,6 +250,7 @@ while true; do
   esac
 done
 EOF
+      sed -i 's/\r$//' /etc/profile.d/lsit-welcome.sh
       chmod +x /etc/profile.d/lsit-welcome.sh
     SHELL
   end

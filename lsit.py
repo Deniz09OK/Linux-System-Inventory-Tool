@@ -6,9 +6,6 @@ import sys
 import threading
 import logging
 
-# Résolution du répertoire réel du script (suit les symlinks).
-# Indispensable quand lsit est invoqué via /usr/local/bin/lsit → /vagrant/lsit.py :
-# sans ça, Python cherche moteur_base dans /usr/local/bin/ et ne le trouve pas.
 dossier_script = os.path.dirname(os.path.realpath(__file__))
 if dossier_script not in sys.path:
     sys.path.insert(0, dossier_script)
