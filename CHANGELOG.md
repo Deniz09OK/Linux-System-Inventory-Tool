@@ -1,3 +1,19 @@
+## v0.8.0 - 2026-07-31
+
+### 🚀 Features
+- tests: ajouter une suite de tests locale (Playwright + SSH) et corriger les bugs qu'elle a révélés ([commit 1fabe80](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/1fabe80d29575ddbc276f47a3ab8f0afd19355ae)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 1
+- Contributors: 1
+- Files changed: 12
+- Period: 2026-07-31 → 2026-07-31
+- Impact score: 3 🚀
+- Compare changes: [v0.7.3...v0.8.0](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.7.3...v0.8.0)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.7.3 - 2026-07-31
 
 ### 🐛 Fixes
