@@ -1,3 +1,19 @@
+## v0.7.3 - 2026-07-31
+
+### 🐛 Fixes
+- rocky: corriger le provisioning Vagrant (sshd cassé après dnf, dashboard inaccessible) ([commit 9d29d65](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/9d29d65a6618faa5947f0be151365be4ed9071e4)) by Deniz09OK
+
+### 📊 Release Stats
+- Commits: 1
+- Contributors: 1
+- Files changed: 4
+- Period: 2026-05-08 → 2026-07-31
+- Impact score: 2 🚀
+- Compare changes: [v0.7.2...v0.7.3](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.7.2...v0.7.3)
+
+### 🤝 Contributors
+- Deniz09OK
+
 ## v0.7.2 - 2026-05-08
 
 ### 🐛 Fixes
