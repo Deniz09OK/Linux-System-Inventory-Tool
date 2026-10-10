@@ -31,10 +31,19 @@ on:
         type: string
         required: false
 
+# Par défaut, le GITHUB_TOKEN est en lecture seule.
+permissions:
+  contents: read
+
 jobs:
   versioning:
     name: Semantic Release
     runs-on: ubuntu-latest
+    # Ce job pousse le commit du changelog et le tag de version.
+    # Les permissions d'un job remplacent celles du workflow (pas de cumul) :
+    # seul contents: write est accordé, aucun autre droit n'est nécessaire.
+    permissions:
+      contents: write
     outputs:
       handle: ${{ steps.tag.outputs.new_version }}
 
