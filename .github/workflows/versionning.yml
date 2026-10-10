@@ -48,19 +48,28 @@ jobs:
 
       - name: Setup commit info
         id: commit_info
+        # Valeurs contrôlables par un tiers : passées par l'environnement,
+        # jamais interpolées dans le script.
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_USER_LOGIN: ${{ github.event.pull_request.user.login }}
+          HEAD_COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          HEAD_COMMIT_AUTHOR_NAME: ${{ github.event.head_commit.author.name }}
+          HEAD_COMMIT_AUTHOR_EMAIL: ${{ github.event.head_commit.author.email }}
+          DISPATCH_DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            USER_NAME="${{ github.event.pull_request.user.login }}"
+          if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+            USER_NAME="$PR_USER_LOGIN"
             USER_EMAIL="${USER_NAME}@users.noreply.github.com"
-            COMMIT_MESSAGE="${{ github.event.pull_request.title }}"
+            COMMIT_MESSAGE="$PR_TITLE"
           else
-            USER_NAME="${{ github.event.head_commit.author.name }}"
-            USER_EMAIL="${{ github.event.head_commit.author.email }}"
-            COMMIT_MESSAGE="${{ github.event.head_commit.message }}"
+            USER_NAME="$HEAD_COMMIT_AUTHOR_NAME"
+            USER_EMAIL="$HEAD_COMMIT_AUTHOR_EMAIL"
+            COMMIT_MESSAGE="$HEAD_COMMIT_MESSAGE"
           fi
 
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-            echo "dry_run=${{ github.event.inputs.dry_run }}" >> $GITHUB_ENV
+          if [ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]; then
+            echo "dry_run=$DISPATCH_DRY_RUN" >> $GITHUB_ENV
           else
             echo "dry_run=false" >> $GITHUB_ENV
           fi
@@ -77,18 +86,18 @@ jobs:
           echo "user_name=$USER_NAME" >> $GITHUB_ENV
           echo "user_email=$USER_EMAIL" >> $GITHUB_ENV
           echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
-          echo "event_name=${{ github.event_name }}" >> $GITHUB_ENV
-          echo "workflow_run_id=${{ github.run_id }}" >> $GITHUB_ENV
-          echo "workflow_run_number=${{ github.run_number }}" >> $GITHUB_ENV
+          echo "event_name=$GITHUB_EVENT_NAME" >> $GITHUB_ENV
+          echo "workflow_run_id=$GITHUB_RUN_ID" >> $GITHUB_ENV
+          echo "workflow_run_number=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
           echo "workflow_timestamp=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_ENV
 
           echo "[AUDIT] ===== WORKFLOW START ====="
-          echo "[AUDIT] Event: ${{ github.event_name }}"
+          echo "[AUDIT] Event: $GITHUB_EVENT_NAME"
           echo "[AUDIT] User: $USER_NAME"
-          echo "[AUDIT] Branch: ${{ github.ref_name }}"
-          echo "[AUDIT] Repository: ${{ github.repository }}"
-          echo "[AUDIT] Commit: ${{ github.sha }}"
-          echo "[AUDIT] Run ID: ${{ github.run_id }}"
+          echo "[AUDIT] Branch: $GITHUB_REF_NAME"
+          echo "[AUDIT] Repository: $GITHUB_REPOSITORY"
+          echo "[AUDIT] Commit: $GITHUB_SHA"
+          echo "[AUDIT] Run ID: $GITHUB_RUN_ID"
           if [ "$DRY_RUN" == "true" ]; then
             echo "[AUDIT] 🔍 DRY-RUN MODE ENABLED - No commits or tags will be created"
           fi
@@ -102,11 +111,13 @@ jobs:
 
       - name: Get commits since last tag
         id: commits
+        env:
+          LAST_TAG: ${{ env.last_tag }}
         run: |
           # Vérifie si le tag existe
-          if git rev-parse ${{ env.last_tag }} >/dev/null 2>&1; then
-            echo "[AUDIT] Tag exists, getting commits since ${{ env.last_tag }}"
-            commits=$(git log ${{ env.last_tag }}..HEAD --pretty=format:"%s%n%b")
+          if git rev-parse "$LAST_TAG" >/dev/null 2>&1; then
+            echo "[AUDIT] Tag exists, getting commits since $LAST_TAG"
+            commits=$(git log "${LAST_TAG}..HEAD" --pretty=format:"%s%n%b")
           else
             echo "[AUDIT] No previous tag found, using all commits"
             commits=$(git log HEAD --pretty=format:"%s%n%b")
@@ -126,20 +137,23 @@ jobs:
       - name: Determine next version
         if: ${{ env.last_tag != 'not_init' }}
         id: bump
+        # Messages de commit contrôlables par un tiers : analysés en shell
+        # depuis une variable, sans interpolation ni eval.
+        env:
+          LAST_TAG: ${{ env.last_tag }}
+          COMMITS: ${{ env.commits }}
         run: |
-          LAST_TAG="${{ env.last_tag }}"
-
           major=$(echo "$LAST_TAG" | cut -d. -f1 | tr -d v)
           minor=$(echo "$LAST_TAG" | cut -d. -f2)
           patch=$(echo "$LAST_TAG" | cut -d. -f3)
 
           bump="none"
 
-          if echo "${{ env.commits }}" | grep -E -q "(BREAKING CHANGE|!:)"; then
+          if printf '%s\n' "$COMMITS" | grep -E -q "(BREAKING CHANGE|!:)"; then
             bump="major"
-          elif echo "${{ env.commits }}" | grep -E -q "^(feat|✨|🚀)"; then
+          elif printf '%s\n' "$COMMITS" | grep -E -q "^(feat|✨|🚀)"; then
             bump="minor"
-          elif echo "${{ env.commits }}" | grep -E -q "^(fix|🐛|perf|⚡|refactor|♻️|🎨)"; then
+          elif printf '%s\n' "$COMMITS" | grep -E -q "^(fix|🐛|perf|⚡|refactor|♻️|🎨)"; then
             bump="patch"
           fi
 
@@ -166,13 +180,16 @@ jobs:
       - name: Generate changelog text
         if: ${{ env.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'dev') && !startsWith(env.commit_message, 'docs(changelog)') }}
         id: changelog
+        env:
+          LAST_TAG: ${{ env.last_tag }}
+          NEW_VERSION: ${{ env.new_version }}
+          COMMIT_COUNT: ${{ env.commit_count }}
         run: |
           echo "[AUDIT] Starting changelog generation"
-          VERSION_TITLE="## ${{ env.new_version }}"
+          VERSION_TITLE="## ${NEW_VERSION}"
           TMP_FILE="CHANGELOG_TMP.md"
           FINAL_FILE="CHANGELOG.md"
-          REPO_URL="https://github.com/${{ github.repository }}"
-          LAST_TAG="${{ env.last_tag }}"
+          REPO_URL="https://github.com/${GITHUB_REPOSITORY}"
 
           extract_commits() {
             local pattern="$1"
@@ -199,7 +216,7 @@ jobs:
               | grep "Merge" || true
           }
 
-          if [[ "${{ env.last_tag }}" != "not_init" ]]; then
+          if [[ "$LAST_TAG" != "not_init" ]]; then
             ALL_COMMITS_FORMATTED="$(git log "${LAST_TAG}..HEAD" --pretty=format:"- %s ([commit %h](${REPO_URL}/commit/%H)) by %an" || true)"
 
             echo "$ALL_COMMITS_FORMATTED"
@@ -287,13 +304,13 @@ jobs:
             echo "impact_score=$impact_score" >> $GITHUB_ENV
 
             echo "### 📊 Release Stats" >> "$TMP_FILE"
-            echo "- Commits: ${{ env.commit_count }}" >> "$TMP_FILE"
+            echo "- Commits: $COMMIT_COUNT" >> "$TMP_FILE"
             echo "- Contributors: $contributors" >> "$TMP_FILE"
             echo "- Files changed: $files_changed" >> "$TMP_FILE"
             echo "- Period: $start_date → $end_date" >> "$TMP_FILE"
             echo "- Impact score: $impact_score 🚀" >> "$TMP_FILE"
-            if [ "${{ env.last_tag }}" != "${{ env.new_version }}" ]; then
-              echo "- Compare changes: [${{ env.last_tag }}...${{ env.new_version }}](${REPO_URL}/compare/${{ env.last_tag }}...${{ env.new_version }})" >> $TMP_FILE
+            if [ "$LAST_TAG" != "$NEW_VERSION" ]; then
+              echo "- Compare changes: [${LAST_TAG}...${NEW_VERSION}](${REPO_URL}/compare/${LAST_TAG}...${NEW_VERSION})" >> $TMP_FILE
             fi
             echo "" >> "$TMP_FILE"
 
@@ -342,30 +359,33 @@ jobs:
 
       - name: Commit changelog
         if: ${{ env.event_name == 'push' && github.ref_name == 'main' && !startsWith(env.commit_message, 'docs(changelog)') && env.dry_run == 'false' }}
+        env:
+          USER_NAME: ${{ env.user_name }}
+          USER_EMAIL: ${{ env.user_email }}
+          NEW_VERSION: ${{ env.new_version }}
+          MAX_ATTEMPTS: ${{ env.max_attempts }}
+          RETRY_DELAY: ${{ env.retry_delay }}
         run: |
-          MAX_ATTEMPTS="${{ env.max_attempts }}"
-          RETRY_DELAY="${{ env.retry_delay }}"
-
           echo "[AUDIT] Starting changelog commit"
-          git config user.name "${{ env.user_name }}"
-          git config user.email "${{ env.user_email }}"
+          git config user.name "$USER_NAME"
+          git config user.email "$USER_EMAIL"
 
-          echo "[AUDIT] Git configured as ${{ env.user_name }} <${{ env.user_email }}>"
+          echo "[AUDIT] Git configured as $USER_NAME <$USER_EMAIL>"
           git add CHANGELOG.md
           if ! git diff --cached --quiet; then
-            git commit -m "docs(changelog): update for ${{ env.new_version }}"
+            git commit -m "docs(changelog): update for ${NEW_VERSION}"
             ATTEMPT=1
-            while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+            while [ "$ATTEMPT" -le "$MAX_ATTEMPTS" ]; do
               echo "[AUDIT] Push attempt ${ATTEMPT}/${MAX_ATTEMPTS}..."
               if git push; then
                 echo "[AUDIT] Changelog committed and pushed successfully"
                 exit 0
               fi
               echo "[AUDIT] Push failed, retrying in ${RETRY_DELAY}s... (attempt ${ATTEMPT}/${MAX_ATTEMPTS})"
-              sleep $RETRY_DELAY
+              sleep "$RETRY_DELAY"
               ATTEMPT=$((ATTEMPT+1))
             done
-            if [ $ATTEMPT -gt $MAX_ATTEMPTS ]; then
+            if [ "$ATTEMPT" -gt "$MAX_ATTEMPTS" ]; then
               echo "[ERROR] Failed to push changelog after ${MAX_ATTEMPTS} attempts"
               exit 1
             fi
@@ -376,25 +396,29 @@ jobs:
       - name: Tag new version
         if: ${{ env.event_name == 'push' && env.dry_run == 'false' && github.ref_name == 'main' }}
         id: tag
+        env:
+          NEW_VERSION: ${{ env.new_version }}
+          MAX_ATTEMPTS: ${{ env.max_attempts }}
+          RETRY_DELAY: ${{ env.retry_delay }}
         run: |
-          MAX_ATTEMPTS="${{ env.max_attempts }}"
-          RETRY_DELAY="${{ env.retry_delay }}"
+          # Usage : retry_push "description" commande [args...]
+          # La commande est exécutée telle quelle ("$@"), sans eval.
           retry_push() {
-            local push_cmd="$1"
-            local action_desc="$2"
+            local action_desc="$1"
+            shift
             local attempt=1
             
-            while [ $attempt -le $MAX_ATTEMPTS ]; do
+            while [ "$attempt" -le "$MAX_ATTEMPTS" ]; do
               echo "[AUDIT] $action_desc - Attempt $attempt/$MAX_ATTEMPTS..."
               
-              if eval "$push_cmd"; then
+              if "$@"; then
                 echo "[AUDIT] ✅ $action_desc succeeded"
                 return 0
               fi
               
-              if [ $attempt -lt $MAX_ATTEMPTS ]; then
+              if [ "$attempt" -lt "$MAX_ATTEMPTS" ]; then
                 echo "[AUDIT] ⏳ $action_desc failed, retrying in ${RETRY_DELAY}s..."
-                sleep $RETRY_DELAY
+                sleep "$RETRY_DELAY"
               fi
               
               attempt=$((attempt+1))
@@ -404,7 +428,7 @@ jobs:
             return 1
           }
           echo "[AUDIT] Starting tag creation"
-          TAG="${{ env.new_version }}"
+          TAG="$NEW_VERSION"
           CURRENT_COMMIT=$(git rev-parse HEAD)
 
           # Vérifie si le tag existe déjà
@@ -420,7 +444,7 @@ jobs:
               git tag "$TAG"
               git push origin ":refs/tags/$TAG"
               git push origin "$TAG"
-              if ! retry_push "git push origin ':refs/tags/$TAG' 2>/dev/null" "Deleting old tag"; then
+              if ! retry_push "Deleting old tag" git push origin ":refs/tags/$TAG" 2>/dev/null; then
                 echo "[WARN] Could not delete old tag on remote, but continuing with new tag..."
               fi
             fi
@@ -429,7 +453,7 @@ jobs:
             git tag "$TAG"
           fi
           # Retry pour pusher le nouveau tag
-          if retry_push "git push origin '$TAG'" "Pushing new tag"; then
+          if retry_push "Pushing new tag" git push origin "$TAG"; then
             echo "[AUDIT] Tag created and pushed successfully"
             echo "new_version=$TAG" >> $GITHUB_OUTPUT
             exit 0
@@ -438,25 +462,27 @@ jobs:
             exit 1
           fi
 
+      # Les variables écrites dans $GITHUB_ENV par les steps précédents sont
+      # exposées comme variables d'environnement : on les lit directement.
       - name: Preview changes (dry-run)
         if: ${{ env.dry_run == 'true' }}
         run: |
           echo ""
           echo "========== DRY-RUN PREVIEW =========="
-          echo "Version: ${{ env.new_version }}"
-          echo "Bump Type: ${{ env.bump_type }}"
+          echo "Version: ${new_version}"
+          echo "Bump Type: ${bump_type}"
           echo ""
           echo "Would create:"
           echo "  - Changelog entry"
-          echo "  - Commit: docs(changelog): update for ${{ env.new_version }}"
-          echo "  - Tag: ${{ env.new_version }}"
+          echo "  - Commit: docs(changelog): update for ${new_version}"
+          echo "  - Tag: ${new_version}"
           echo ""
           echo "Stats:"
-          echo "  - Features: ${{ env.feature_count }}"
-          echo "  - Fixes: ${{ env.fix_count }}"
-          echo "  - Refactors: ${{ env.refactor_count }}"
-          echo "  - Other changes: ${{ env.misc_count }}"
-          echo "  - Merges: ${{ env.merge_count }}"
+          echo "  - Features: ${feature_count}"
+          echo "  - Fixes: ${fix_count}"
+          echo "  - Refactors: ${refactor_count}"
+          echo "  - Other changes: ${misc_count}"
+          echo "  - Merges: ${merge_count}"
           echo ""
           echo "Preview of changelog:"
           echo "---"
@@ -473,34 +499,34 @@ jobs:
         run: |
           echo ""
           echo "========== WORKFLOW AUDIT SUMMARY =========="
-          echo "Timestamp: ${{ env.workflow_timestamp }}"
-          echo "Run ID: ${{ env.workflow_run_id }}"
-          echo "Run Number: ${{ env.workflow_run_number }}"
-          echo "Event: ${{ env.event_name }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "User: ${{ env.user_name }}"
-          echo "Repository: ${{ github.repository }}"
-          echo "Commit: ${{ github.sha }}"
+          echo "Timestamp: ${workflow_timestamp}"
+          echo "Run ID: ${workflow_run_id}"
+          echo "Run Number: ${workflow_run_number}"
+          echo "Event: ${event_name}"
+          echo "Branch: ${GITHUB_REF_NAME}"
+          echo "User: ${user_name}"
+          echo "Repository: ${GITHUB_REPOSITORY}"
+          echo "Commit: ${GITHUB_SHA}"
           echo ""
           echo "Version Details:"
-          echo "  Previous: ${{ env.last_tag }}"
-          echo "  New: ${{ env.new_version }}"
-          echo "  Bump Type: ${{ env.bump_type }}"
-          echo "  Dry-run: ${{ env.dry_run }}"
+          echo "  Previous: ${last_tag}"
+          echo "  New: ${new_version}"
+          echo "  Bump Type: ${bump_type}"
+          echo "  Dry-run: ${dry_run}"
           echo ""
           echo "Changelog Stats:"
-          echo "  Commits: ${{ env.commit_count }}"
-          echo "  Features: ${{ env.feature_count }}"
-          echo "  Fixes: ${{ env.fix_count }}"
-          echo "  Refactors: ${{ env.refactor_count }}"
-          echo "  Other: ${{ env.misc_count }}"
-          echo "  Merges: ${{ env.merge_count }}"
+          echo "  Commits: ${commit_count}"
+          echo "  Features: ${feature_count}"
+          echo "  Fixes: ${fix_count}"
+          echo "  Refactors: ${refactor_count}"
+          echo "  Other: ${misc_count}"
+          echo "  Merges: ${merge_count}"
           echo ""
           echo "Global Stats:"
-          echo "  Impact Score: ${{ env.impact_score }} 🚀"
-          echo "  Contributors: ${{ env.contributors }}"
-          echo "  Files Changed: ${{ env.files_changed }}"
-          echo "  Period: ${{ env.period }}"
+          echo "  Impact Score: ${impact_score} 🚀"
+          echo "  Contributors: ${contributors}"
+          echo "  Files Changed: ${files_changed}"
+          echo "  Period: ${period}"
           echo ""
           echo "=========================================="
           echo ""
