@@ -407,8 +407,17 @@ jobs:
                 echo "[AUDIT] Changelog committed and pushed successfully"
                 exit 0
               fi
-              echo "[AUDIT] Push failed, retrying in ${RETRY_DELAY}s... (attempt ${ATTEMPT}/${MAX_ATTEMPTS})"
-              sleep "$RETRY_DELAY"
+              if [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; then
+                echo "[AUDIT] Push failed, retrying in ${RETRY_DELAY}s... (attempt ${ATTEMPT}/${MAX_ATTEMPTS})"
+                sleep "$RETRY_DELAY"
+                # La branche distante a pu avancer entre-temps : on rejoue le
+                # commit du changelog par-dessus avant de retenter (pas de force push).
+                echo "[AUDIT] Rebasing on origin/${GITHUB_REF_NAME} before next attempt"
+                if ! git pull --rebase origin "$GITHUB_REF_NAME"; then
+                  echo "[WARN] git pull --rebase failed, aborting rebase"
+                  git rebase --abort 2>/dev/null || true
+                fi
+              fi
               ATTEMPT=$((ATTEMPT+1))
             done
             if [ "$ATTEMPT" -gt "$MAX_ATTEMPTS" ]; then
