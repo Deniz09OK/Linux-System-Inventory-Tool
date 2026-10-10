@@ -1,3 +1,28 @@
+## v0.8.1 - 2026-10-10
+
+### 🐛 Fixes
+- ci: épingle actions/checkout sur le SHA de la release v4.4.0 ([commit 2073407](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/20734070a7a9375c0a1409b2838f17c65c722777)) by Deniz09OK
+- ci: ne déplace plus un tag de version déjà publié ([commit 4f4617f](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/4f4617fd350f5264a2d17c294da06265afcaf9dd)) by Deniz09OK
+- ci: rebase avant chaque nouvelle tentative de push du changelog ([commit 136e28d](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/136e28dd46dbcf4742de2efd6db775604c665820)) by Deniz09OK
+- ci: restreint les permissions du GITHUB_TOKEN ([commit 5c49a5e](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/5c49a5ee14a8e13854a76404276e062b7f049663)) by Deniz09OK
+- ci: écrit les valeurs non fiables dans GITHUB_ENV avec un délimiteur aléatoire ([commit f657926](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/f6579266d1ea88bcf16bd5b0fb90ac32a493e9f1)) by Deniz09OK
+- ci: passe les entrées non fiables par des variables d'environnement ([commit 5ef4a09](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/5ef4a09d9ca981caa132c11150f485b0c83cdefc)) by Deniz09OK
+
+### 🔀 Merges
+- Merge pull request #1 from Deniz09OK/securite/versionning ([commit 2d57716](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/commit/2d577163f5da4684adaa25e29671ff5db76f989c)) by Deniz Ok
+
+### 📊 Release Stats
+- Commits: 65
+- Contributors: 2
+- Files changed: 2
+- Period: 2026-07-31 → 2026-10-10
+- Impact score: 12 🚀
+- Compare changes: [v0.8.0...v0.8.1](https://github.com/Deniz09OK/Linux-System-Inventory-Tool/compare/v0.8.0...v0.8.1)
+
+### 🤝 Contributors
+- Deniz Ok
+- Deniz09OK
+
 ## v0.8.0 - 2026-07-31
 
 ### 🚀 Features
