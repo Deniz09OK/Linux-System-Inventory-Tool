@@ -68,6 +68,19 @@ jobs:
             COMMIT_MESSAGE="$HEAD_COMMIT_MESSAGE"
           fi
 
+          # Écrit une valeur non fiable dans $GITHUB_ENV avec un délimiteur
+          # aléatoire : un retour à la ligne dans la valeur (message de commit
+          # multi-ligne) ne peut pas définir d'autres variables (BASH_ENV...).
+          set_env_safe() {
+            local delim
+            delim="ghadelim_$(openssl rand -hex 16)"
+            {
+              printf '%s<<%s\n' "$1" "$delim"
+              printf '%s\n' "$2"
+              printf '%s\n' "$delim"
+            } >> "$GITHUB_ENV"
+          }
+
           if [ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]; then
             echo "dry_run=$DISPATCH_DRY_RUN" >> $GITHUB_ENV
           else
@@ -83,9 +96,9 @@ jobs:
           echo "misc_count=0" >> $GITHUB_ENV
           echo "merge_count=0" >> $GITHUB_ENV
           echo "bump_type=initial" >> $GITHUB_ENV
-          echo "user_name=$USER_NAME" >> $GITHUB_ENV
-          echo "user_email=$USER_EMAIL" >> $GITHUB_ENV
-          echo "commit_message=$COMMIT_MESSAGE" >> $GITHUB_ENV
+          set_env_safe user_name "$USER_NAME"
+          set_env_safe user_email "$USER_EMAIL"
+          set_env_safe commit_message "$COMMIT_MESSAGE"
           echo "event_name=$GITHUB_EVENT_NAME" >> $GITHUB_ENV
           echo "workflow_run_id=$GITHUB_RUN_ID" >> $GITHUB_ENV
           echo "workflow_run_number=$GITHUB_RUN_NUMBER" >> $GITHUB_ENV
@@ -128,10 +141,13 @@ jobs:
           echo "commit_count=$commit_count" >> $GITHUB_ENV
           echo "[AUDIT] Total commits: $commit_count"
 
+          # Délimiteur aléatoire : une ligne "EOF" dans un message de commit
+          # ne doit pas pouvoir fermer le bloc et injecter d'autres variables.
+          delim="ghadelim_$(openssl rand -hex 16)"
           {
-            echo "commits<<EOF"
+            echo "commits<<$delim"
             echo "$commits"
-            echo "EOF"
+            echo "$delim"
           } >> $GITHUB_ENV
 
       - name: Determine next version
@@ -348,9 +364,10 @@ jobs:
             
             echo "[AUDIT] Changelog generation completed"
 
-            echo "CHANGELOG<<EOF" >> $GITHUB_ENV
+            delim="ghadelim_$(openssl rand -hex 16)"
+            echo "CHANGELOG<<$delim" >> $GITHUB_ENV
             cat "$FINAL_FILE" >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
+            echo "$delim" >> $GITHUB_ENV
 
           else
             echo "[AUDIT] Skipping changelog generation (first version)"
